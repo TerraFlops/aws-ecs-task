@@ -21,3 +21,19 @@ output "ecs_service_name" {
 output "load_balancer_arn" {
   value = var.load_balancer_enabled == true ? module.task_alb.alb_arn : null
 }
+
+output "blue_target_group_arn" {
+  value = var.load_balancer_enabled == true ? module.task_alb.blue_target_group_arn : null
+}
+
+output "blue_target_group_name" {
+  value = var.load_balancer_enabled == true ? module.task_alb.blue_target_group_name : null
+}
+
+output "green_target_group_arn" {
+  value = var.load_balancer_enabled == true ? module.task_alb.green_target_group_arn : null
+}
+
+output "green_target_group_name" {
+  value = var.load_balancer_enabled == true ? module.task_alb.green_target_group_name : null
+}
