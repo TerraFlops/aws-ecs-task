@@ -19,21 +19,21 @@ output "ecs_service_name" {
 }
 
 output "load_balancer_arn" {
-  value = var.load_balancer_enabled == true ? module.task_alb.alb_arn : null
+  value = var.load_balancer_enabled == true ? module.task_alb[0].alb_arn : null
 }
 
 output "blue_target_group_arn" {
-  value = var.load_balancer_enabled == true ? module.task_alb.blue_target_group_arn : null
+  value = var.load_balancer_enabled == true ? module.task_alb[0].blue_target_group_arn : null
 }
 
 output "blue_target_group_name" {
-  value = var.load_balancer_enabled == true ? module.task_alb.blue_target_group_name : null
+  value = var.load_balancer_enabled == true ? module.task_alb[0].blue_target_group_name : null
 }
 
 output "green_target_group_arn" {
-  value = var.load_balancer_enabled == true ? module.task_alb.green_target_group_arn : null
+  value = var.load_balancer_enabled == true ? module.task_alb[0].green_target_group_arn : null
 }
 
 output "green_target_group_name" {
-  value = var.load_balancer_enabled == true ? module.task_alb.green_target_group_name : null
+  value = var.load_balancer_enabled == true ? module.task_alb[0].green_target_group_name : null
 }
