@@ -164,6 +164,11 @@ variable "load_balancer_enabled" {
   default = false
 }
 
+variable "load_balancer_internal" {
+  type = bool
+  default = false
+}
+
 variable "load_balancer_security_group_ids" {
   type = list(string)
   default = []
