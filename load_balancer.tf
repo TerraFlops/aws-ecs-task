@@ -10,7 +10,7 @@ module "task_alb_certificate" {
 # Create load balancer
 module "task_alb" {
   count = var.load_balancer_enabled == true ? 1 : 0
-  source = "git::https://github.com/TerraFlops/aws-ecs-blue-green-load-balancer?ref=v1.1"
+  source = "git::https://github.com/TerraFlops/aws-ecs-blue-green-load-balancer?ref=v1.2"
   name = var.container_name
   internal = var.load_balancer_internal
   # Setup log bucket
