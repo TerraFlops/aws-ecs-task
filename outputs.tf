@@ -26,6 +26,10 @@ output "load_balancer_arn" {
   value = var.load_balancer_enabled == true ? module.task_alb[0].alb_arn : null
 }
 
+output "load_balancer_listener_arn" {
+  value = var.load_balancer_enabled == true ? module.task_alb[0].alb_listener_arn : null
+}
+
 output "blue_target_group_arn" {
   value = var.load_balancer_enabled == true ? module.task_alb[0].blue_target_group_arn : null
 }
