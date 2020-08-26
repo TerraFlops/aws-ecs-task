@@ -17,3 +17,7 @@ output "ecs_service_id" {
 output "ecs_service_name" {
   value = aws_ecs_service.task.name
 }
+
+output "load_balancer_arn" {
+  value = var.load_balancer_enabled == true ? module.task_alb.alb_arn : null
+}
