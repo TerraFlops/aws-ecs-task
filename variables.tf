@@ -237,6 +237,12 @@ variable "alb_vpc_id" {
   default = null
 }
 
+variable "alb_certificate_arn" {
+  description = "If using an existing ACM certificate this should contain the ARN of the certificate to link to the load balancer"
+  type = string
+  default = null
+}
+
 variable "alb_certificate_subject_name" {
   description = "Primary subject name to be used on the load balancer certificate. This is required if using a HTTPS listener"
   type = string

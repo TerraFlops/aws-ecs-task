@@ -10,6 +10,9 @@ locals {
   # If a role name was specified as a module variable, use that- otherwise procedurally generate the IAM roles name
   ecs_execution_iam_role_name = var.ecs_execution_role_name == null ? "${local.ecs_task_name}EcsExecutionRole" : var.ecs_execution_role_name
   ecs_task_iam_role_name = var.ecs_task_role_name == null ? "${local.ecs_task_name}EcsTaskRole" : var.ecs_task_role_name
+
+  # Get the ARN of the load balancer certificate to use (if any)
+  alb_certificate_arn = var.alb_certificate_arn == null ? (var.alb_listener_protocol == "https" && var.alb_enabled == true && var.alb_certificate_arn == null ? module.task_alb_certificate[0].acm_certificate_arn : null) : var.alb_certificate_arn
 }
 
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -18,7 +21,7 @@ locals {
 
 # Create an ACM certificate for the load balancer if we are using HTTPS
 module "task_alb_certificate" {
-  count = var.alb_listener_protocol == "https" && var.alb_enabled == true ? 1 : 0
+  count = var.alb_listener_protocol == "https" && var.alb_enabled == true && var.alb_certificate_arn == null ? 1 : 0
   source = "git::https://github.com/TerraFlops/aws-acm-certificate.git?ref=v1.0"
   domain_name = var.alb_certificate_subject_name
   hosted_zone_id = var.alb_dns_record_hosted_zone_id
@@ -39,7 +42,7 @@ module "task_alb" {
   # Setup listener
   listener_port = var.alb_listener_port
   listener_protocol = var.alb_listener_protocol
-  listener_certificate_arn = var.alb_listener_protocol == "https" ? module.task_alb_certificate[0].acm_certificate_arn : null
+  listener_certificate_arn = var.alb_listener_protocol == "https" ? local.alb_certificate_arn : null
 
   # Setup target
   target_type = "ip"
