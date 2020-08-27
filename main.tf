@@ -290,8 +290,8 @@ resource "aws_ecs_service" "task" {
     })
     content {
       target_group_arn = load_balancer.value["target_group_arn"]
-      container_name = load_balancer.value["ecs_task_name"]
-      container_port = load_balancer.value["ecs_task_port"]
+      container_name = load_balancer.value["container_name"]
+      container_port = load_balancer.value["container_port"]
     }
   }
 }
