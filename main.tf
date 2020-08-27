@@ -113,7 +113,7 @@ module "ecs_execution_iam_role" {
 
 # If we are not creating a role, find the existing role name that was specified
 data "aws_iam_role" "ecs_execution_iam_role" {
-  count = var.ecs_execution_role_name_create == true ? 1 : 0
+  count = var.ecs_execution_role_name_create == false ? 1 : 0
   name = local.ecs_execution_iam_role_name
 }
 
