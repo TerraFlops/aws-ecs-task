@@ -2,8 +2,6 @@
  
 ### AWS ECS Task
 
-This module is currently incomplete and should not be used.
-
 This module can be used to provision an ECS task.
 
 #### Example usage
@@ -12,7 +10,7 @@ This module can be used to provision an ECS task.
 module "example" {
   source = "git::https://github.com/TerraFlops/aws-ecs-task?ref=v1.0"
   # Put the task into the shared cluster created in `ecs_prerequisites.tf` file
-  cluster_name = aws_ecs_cluster.optus_qr_connect.name
+  cluster_name = aws_ecs_cluster.example.name
 
   # Set basic container details
   container_name = "logstash"
@@ -21,17 +19,17 @@ module "example" {
 
   # Attach the IAM policy documents that the task will be given for use during runtime
   container_runtime_policies = [
-    # TODO: Limit the access of this task once real world requirements have been determined
     {
-      name = "AdministratorAccess"
-      policy_document = data.aws_iam_policy_document.logstash_task.json
+      name = "ExamplePolicy"
+      policy_document = data.aws_iam_policy_document.example.json
     }
   ]
 
   # Configure environment variables that will be set on the container at launch. This should be limited to the bare minimum required to
   # bootstrap the application container, and should never contain application configuration details or secrets- these should be stored in
   # AWS Systems Manager or AWS Secrets Manager
-  container_environment_variables = local.optus_qr_connect_environment_variables
+  container_environment_variables = {
+  }
 
   # The ECS task module forces the containers filesystem to be configured in read-only mode. To work around this for folder which
   # do legitimately require write access we must configure Docker volumes
