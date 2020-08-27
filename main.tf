@@ -197,6 +197,7 @@ data "aws_iam_policy_document" "task_assume_role" {
 
 locals {
   ecr_repository_tag_parameter_name = "${var.ecr_repository_tag_parameter_prefix}/${local.ecs_task_name}"
+  ecs_task_definition_template_name = "${var.ecs_task_definition_template_parameter_prefix}/${local.ecs_task_name}"
 }
 
 # Get the default provider region if none was specified for the log group
@@ -215,6 +216,12 @@ resource "aws_ssm_parameter" "ecr_repository_tag" {
   }
 }
 
+resource "aws_ssm_parameter" "ecs_task_definition_template" {
+  name = local.ecs_task_definition_template_name
+  type = "String"
+  value = module.ecs_container_definition_template.json
+}
+
 # Always read the most recent tag value for use in the container definition
 data "aws_ssm_parameter" "ecr_repository_tag" {
   depends_on = [
@@ -229,6 +236,26 @@ module "ecs_container_definition" {
   name = local.ecs_task_name
   repository_name = var.ecr_repository_name == null ? local.ecr_repository_name : var.ecr_repository_name
   repository_tag = data.aws_ssm_parameter.ecr_repository_tag.value
+  cpu = var.ecs_task_cpu
+  memory = var.ecs_task_memory
+  working_directory = var.ecs_task_working_directory
+  port_mappings = var.ecs_task_port_mappings
+  entry_point = var.ecs_task_entry_point
+  command = var.ecs_task_command
+  volumes = var.ecs_task_volumes
+  volumes_efs = var.ecs_task_volumes_efs
+  mount_points = var.ecs_task_mount_points
+  environment_variables = var.ecs_task_environment_variables
+  log_group_name = var.ecs_task_log_group_name == null ? var.ecs_cluster_name : var.ecs_task_log_group_name
+  log_group_region = var.ecs_task_log_group_region == null ? data.aws_region.log_group_region.name : var.ecs_task_log_group_region
+}
+
+# Create a template JSON document for storage in SSM parameter store
+module "ecs_container_definition_template" {
+  source = "git::https://github.com/TerraFlops/aws-ecs-container-definition?ref=v1.0"
+  name = local.ecs_task_name
+  repository_name = var.ecr_repository_name == null ? local.ecr_repository_name : var.ecr_repository_name
+  repository_tag = "DEPLOYMENT_IMAGE_TAG"
   cpu = var.ecs_task_cpu
   memory = var.ecs_task_memory
   working_directory = var.ecs_task_working_directory
