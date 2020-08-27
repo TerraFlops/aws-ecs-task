@@ -230,26 +230,6 @@ data "aws_ssm_parameter" "ecr_repository_tag" {
   name = local.ecr_repository_tag_parameter_name
 }
 
-# Create ECS container definition JSON document
-module "ecs_container_definition" {
-  source = "git::https://github.com/TerraFlops/aws-ecs-container-definition?ref=v1.0"
-  name = local.ecs_task_name
-  repository_name = var.ecr_repository_name == null ? local.ecr_repository_name : var.ecr_repository_name
-  repository_tag = data.aws_ssm_parameter.ecr_repository_tag.value
-  cpu = var.ecs_task_cpu
-  memory = var.ecs_task_memory
-  working_directory = var.ecs_task_working_directory
-  port_mappings = var.ecs_task_port_mappings
-  entry_point = var.ecs_task_entry_point
-  command = var.ecs_task_command
-  volumes = var.ecs_task_volumes
-  volumes_efs = var.ecs_task_volumes_efs
-  mount_points = var.ecs_task_mount_points
-  environment_variables = var.ecs_task_environment_variables
-  log_group_name = var.ecs_task_log_group_name == null ? var.ecs_cluster_name : var.ecs_task_log_group_name
-  log_group_region = var.ecs_task_log_group_region == null ? data.aws_region.log_group_region.name : var.ecs_task_log_group_region
-}
-
 # Create a template JSON document for storage in SSM parameter store
 module "ecs_container_definition_template" {
   source = "git::https://github.com/TerraFlops/aws-ecs-container-definition?ref=v1.0"
@@ -272,7 +252,7 @@ module "ecs_container_definition_template" {
 
 # Create task definition
 resource "aws_ecs_task_definition" "task" {
-  container_definitions = module.ecs_container_definition.json_array
+  container_definitions = replace(module.ecs_container_definition_template.json_array, var.ecs_task_definition_template_tag, aws_ssm_parameter.ecr_repository_tag.value)
   cpu = module.ecs_container_definition.cpu
   memory = module.ecs_container_definition.memory
   family = local.ecs_task_family
