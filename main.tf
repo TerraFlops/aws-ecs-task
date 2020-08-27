@@ -204,7 +204,7 @@ data "aws_region" "log_group_region" {}
 
 # Create an SSM parameter to store the deployed version
 resource "aws_ssm_parameter" "ecr_repository_tag" {
-  name = ecr_repository_tag_parameter_name
+  name = local.ecr_repository_tag_parameter_name
   type = "String"
   value = var.ecr_repository_initial_tag
   # Ignore any change made to the value so we dont keep reapplying the initial tag
