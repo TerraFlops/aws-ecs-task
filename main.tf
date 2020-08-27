@@ -227,8 +227,8 @@ resource "aws_ecs_task_definition" "task" {
   requires_compatibilities = upper(var.ecs_launch_type) == "FARGATE" ? ["EC2", "FARGATE"] : ["EC2"]
 
   # Associate the IAM task/execution roles
-  execution_role_arn = var.ecs_execution_role_name_create == true ? module.ecs_execution_iam_role.iam_role_arn : data.aws_iam_role.ecs_execution_iam_role[0].arn
-  task_role_arn = var.ecs_task_role_name_create == true ? module.ecs_task_iam_role.iam_role_arn : data.aws_iam_role.ecs_task_iam_role[0].arn
+  execution_role_arn = var.ecs_execution_role_name_create == true ? module.ecs_execution_iam_role[0].iam_role_arn : data.aws_iam_role.ecs_execution_iam_role[0].arn
+  task_role_arn = var.ecs_task_role_name_create == true ? module.ecs_task_iam_role[0].iam_role_arn : data.aws_iam_role.ecs_task_iam_role[0].arn
 
   # Attach Docker volumes
   dynamic "volume" {
