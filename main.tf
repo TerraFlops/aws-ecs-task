@@ -217,6 +217,9 @@ resource "aws_ssm_parameter" "ecr_repository_tag" {
 
 # Always read the most recent tag value for use in the container definition
 data "aws_ssm_parameter" "ecr_repository_tag" {
+  depends_on = [
+    aws_ssm_parameter.ecr_repository_tag
+  ]
   name = aws_ssm_parameter.ecr_repository_tag.name
 }
 
