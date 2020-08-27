@@ -196,8 +196,8 @@ data "aws_iam_policy_document" "task_assume_role" {
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 locals {
-  ecr_repository_tag_parameter_name = replace("${var.ecr_repository_tag_parameter_prefix}/${local.ecs_task_name}", "//", "/")
-  ecs_task_definition_template_name = replace("${var.ecs_task_definition_template_parameter_prefix}/${local.ecs_task_name}", "//", "/")
+  ecr_repository_tag_parameter_name = "${var.ecr_repository_tag_parameter_prefix}${local.ecs_task_name}"
+  ecs_task_definition_template_name = "${var.ecs_task_definition_template_parameter_prefix}${local.ecs_task_name}"
 }
 
 # Get the default provider region if none was specified for the log group
