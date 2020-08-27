@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 locals {
-  ecs_task_name = join("", [ for element in split("_", lower(var.name)) : title(element) ])
+  ecs_task_name = join("", [for element in split("_", lower(var.name)) : title(element)])
   ecs_task_family = var.ecs_task_family == null ? local.ecs_task_name : var.ecs_task_family
   ecr_repository_name = lower(replace(var.name, "_", "-"))
 
@@ -195,14 +195,37 @@ data "aws_iam_policy_document" "task_assume_role" {
 # Create ECS task definition
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+locals {
+  ecr_repository_tag_parameter_name = "${var.ecr_repository_tag_parameter_prefix}/${local.ecs_task_name}"
+}
+
 # Get the default provider region if none was specified for the log group
 data "aws_region" "log_group_region" {}
 
+# Create an SSM parameter to store the deployed version
+resource "aws_ssm_parameter" "ecr_repository_tag" {
+  name = ecr_repository_tag_parameter_name
+  type = "String"
+  value = var.ecr_repository_initial_tag
+  # Ignore any change made to the value so we dont keep reapplying the initial tag
+  lifecycle {
+    ignore_changes = [
+      value
+    ]
+  }
+}
+
+# Always read the most recent tag value for use in the container definition
+data "aws_ssm_parameter" "ecr_repository_tag" {
+  name = aws_ssm_parameter.ecr_repository_tag.name
+}
+
 # Create ECS container definition JSON document
-module "ecs_task_definition" {
+module "ecs_container_definition" {
   source = "git::https://github.com/TerraFlops/aws-ecs-container-definition?ref=v1.0"
   name = local.ecs_task_name
   repository_name = var.ecr_repository_name == null ? local.ecr_repository_name : var.ecr_repository_name
+  repository_tag = data.aws_ssm_parameter.ecr_repository_tag.value
   cpu = var.ecs_task_cpu
   memory = var.ecs_task_memory
   working_directory = var.ecs_task_working_directory
@@ -219,12 +242,15 @@ module "ecs_task_definition" {
 
 # Create task definition
 resource "aws_ecs_task_definition" "task" {
-  container_definitions = module.ecs_task_definition.json_array
-  cpu = module.ecs_task_definition.cpu
-  memory = module.ecs_task_definition.memory
+  container_definitions = module.ecs_container_definition.json_array
+  cpu = module.ecs_container_definition.cpu
+  memory = module.ecs_container_definition.memory
   family = local.ecs_task_family
   network_mode = "awsvpc"
-  requires_compatibilities = upper(var.ecs_launch_type) == "FARGATE" ? ["EC2", "FARGATE"] : ["EC2"]
+  requires_compatibilities = upper(var.ecs_launch_type) == "FARGATE" ? [
+    "EC2",
+    "FARGATE"] : [
+    "EC2"]
 
   # Associate the IAM task/execution roles
   execution_role_arn = var.ecs_execution_role_name_create == true ? module.ecs_execution_iam_role[0].iam_role_arn : data.aws_iam_role.ecs_execution_iam_role[0].arn
@@ -232,7 +258,7 @@ resource "aws_ecs_task_definition" "task" {
 
   # Attach Docker volumes
   dynamic "volume" {
-    for_each = module.ecs_task_definition.volumes
+    for_each = module.ecs_container_definition.volumes
     content {
       name = volume.value
     }

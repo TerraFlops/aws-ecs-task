@@ -72,6 +72,18 @@ variable "ecr_repository_name" {
   default = null
 }
 
+variable "ecr_repository_initial_tag" {
+  description = "The initial ECR repository image tag to set by default on ECS service. If non supplied will be set to 'initial'"
+  type = string
+  default = "initial"
+}
+
+variable "ecr_repository_tag_parameter_prefix" {
+  description = "Prefix prepended to the SSM parameter which stores the currently deployed image tag"
+  type = string
+  default = "/Terraform/ECS"
+}
+
 variable "ecr_repository_create" {
   description = "Boolean flag, if true a new ECR repository will be created for the task"
   type = bool
