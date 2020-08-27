@@ -253,8 +253,8 @@ module "ecs_container_definition_template" {
 # Create task definition
 resource "aws_ecs_task_definition" "task" {
   container_definitions = replace(module.ecs_container_definition_template.json_array, var.ecs_task_definition_template_tag, aws_ssm_parameter.ecr_repository_tag.value)
-  cpu = module.ecs_container_definition.cpu
-  memory = module.ecs_container_definition.memory
+  cpu = module.ecs_container_definition_template.cpu
+  memory = module.ecs_container_definition_template.memory
   family = local.ecs_task_family
   network_mode = "awsvpc"
   requires_compatibilities = upper(var.ecs_launch_type) == "FARGATE" ? [
@@ -268,7 +268,7 @@ resource "aws_ecs_task_definition" "task" {
 
   # Attach Docker volumes
   dynamic "volume" {
-    for_each = module.ecs_container_definition.volumes
+    for_each = module.ecs_container_definition_template.volumes
     content {
       name = volume.value
     }
