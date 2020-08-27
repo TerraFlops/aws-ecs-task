@@ -81,13 +81,19 @@ variable "ecr_repository_initial_tag" {
 variable "ecr_repository_tag_parameter_prefix" {
   description = "Prefix prepended to the SSM parameter which stores the currently deployed image tag (include trailing slash if you are specify a root path)"
   type = string
-  default = "/Terraform/ECS/CurrentTag/"
+  default = "/Terraform/ECS/Tag/"
 }
 
 variable "ecs_task_definition_template_parameter_prefix" {
   description = "Prefix prepended to the SSM parameter which stores the task definition container template (include trailing slash if you are specify a root path)"
   type = string
   default = "/Terraform/ECS/Template/"
+}
+
+variable "ecs_task_definition_template_tag" {
+  description = "The string to be used in the ECS template for the image tag. Defaults to 'DEPLOYMENT_IMAGE_TAG'"
+  type = string
+  default = "DEPLOYMENT_IMAGE_TAG"
 }
 
 variable "ecr_repository_create" {

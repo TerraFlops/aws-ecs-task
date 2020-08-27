@@ -255,7 +255,7 @@ module "ecs_container_definition_template" {
   source = "git::https://github.com/TerraFlops/aws-ecs-container-definition?ref=v1.0"
   name = local.ecs_task_name
   repository_name = var.ecr_repository_name == null ? local.ecr_repository_name : var.ecr_repository_name
-  repository_tag = "DEPLOYMENT_IMAGE_TAG"
+  repository_tag = var.ecs_task_definition_template_tag
   cpu = var.ecs_task_cpu
   memory = var.ecs_task_memory
   working_directory = var.ecs_task_working_directory
