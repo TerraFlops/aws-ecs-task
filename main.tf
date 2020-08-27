@@ -227,7 +227,7 @@ data "aws_ssm_parameter" "ecr_repository_tag" {
   depends_on = [
     aws_ssm_parameter.ecr_repository_tag
   ]
-  name = aws_ssm_parameter.ecr_repository_tag.name
+  name = local.ecr_repository_tag_parameter_name
 }
 
 # Create ECS container definition JSON document
