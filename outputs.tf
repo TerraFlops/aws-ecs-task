@@ -20,12 +20,12 @@ output "ecs_task_iam_role_name" {
 
 output "ecs_execution_iam_role_arn" {
   description = "ARN of the ECS execution role"
-  value = var.ecs_execution_role_name_create == true ? module.ecs_execution_iam_role[0].iam_role_arn : data.aws_iam_role.ecs_execution_iam_role.arn
+  value = var.ecs_execution_role_name_create == true ? module.ecs_execution_iam_role[0].iam_role_arn : data.aws_iam_role.ecs_execution_iam_role[0].arn
 }
 
 output "ecs_execution_iam_role_name" {
   description = "Name of the ECS execution role"
-  value = var.ecs_execution_role_name_create == true ? module.ecs_execution_iam_role[0].iam_role_name : data.aws_iam_role.ecs_execution_iam_role.name
+  value = var.ecs_execution_role_name_create == true ? module.ecs_execution_iam_role[0].iam_role_name : data.aws_iam_role.ecs_execution_iam_role[0].name
 }
 
 output "ecs_cluster_name" {

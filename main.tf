@@ -106,7 +106,7 @@ module "ecs_execution_iam_role" {
   inline_policies = [
     {
       name = "EcsExecutionRole"
-      policy_document = data.aws_iam_policy_document.ecs_execution_iam_role.json
+      policy_document = data.aws_iam_policy_document.ecs_execution_iam_role[0].json
     }
   ]
 }
