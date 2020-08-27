@@ -232,7 +232,7 @@ data "aws_ssm_parameter" "ecr_repository_tag" {
 
 # Create a template JSON document for storage in SSM parameter store
 module "ecs_container_definition_template" {
-  source = "git::https://github.com/TerraFlops/aws-ecs-container-definition?ref=v1.2"
+  source = "git::https://github.com/TerraFlops/aws-ecs-container-definition?ref=v1.3"
   name = local.ecs_task_name
   repository_name = var.ecr_repository_name == null ? local.ecr_repository_name : var.ecr_repository_name
   repository_tag = var.ecs_task_definition_template_tag
