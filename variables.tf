@@ -2,6 +2,11 @@
 # Task container settings
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+variable "name" {
+  description = "Name of the new task to be created. This must be entered in snake cake in order for auto-generation of other names to work correctly and meet required formatting rules (e.g. 'backend_task')"
+  type = string
+}
+
 variable "ecs_cluster_name" {
   description = "Name of existing ECS cluster into which tasks will be placed"
   type = string
@@ -77,11 +82,6 @@ variable "ecr_repository_image_tag_mutability" {
   description = "If creating the ECR repository this define the mutability of image tags. Defaults to 'IMMUTABLE'"
   type = string
   default = "IMMUTABLE"
-}
-
-variable "ecs_task_name" {
-  description = "Name of the new task to be created. This must be entered in snake cake in order for auto-generation of other names to work correctly and meet required formatting rules (e.g. 'backend_task')"
-  type = string
 }
 
 variable "ecs_task_family" {

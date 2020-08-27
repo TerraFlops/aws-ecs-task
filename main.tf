@@ -3,9 +3,9 @@
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 locals {
-  ecs_task_name = join("", [ for element in split("_", lower(var.ecs_task_name)) : title(element) ])
+  ecs_task_name = join("", [ for element in split("_", lower(var.name)) : title(element) ])
   ecs_task_family = var.ecs_task_family == null ? local.ecs_task_name : var.ecs_task_family
-  ecr_repository_name = lower(replace(var.ecs_task_name, "_", "-"))
+  ecr_repository_name = lower(replace(var.name, "_", "-"))
 
   # If a role name was specified as a module variable, use that- otherwise procedurally generate the IAM roles name
   ecs_execution_iam_role_name = var.ecs_execution_role_name == null ? "${local.ecs_task_name}EcsExecutionRole" : var.ecs_execution_role_name
@@ -29,7 +29,7 @@ module "task_alb_certificate" {
 module "task_alb" {
   count = var.alb_enabled == true ? 1 : 0
   source = "git::https://github.com/TerraFlops/aws-ecs-blue-green-load-balancer?ref=v1.3"
-  name = var.ecs_task_name
+  name = var.name
   internal = var.alb_internal
 
   # Setup log bucket
