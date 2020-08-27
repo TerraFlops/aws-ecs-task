@@ -65,7 +65,7 @@ module "task_alb" {
 
 # Create vanity Route 53 CNAME record for the load balancer if requested
 resource "aws_route53_record" "task_alb_cname" {
-  count = var.alb_enabled == true && alb_dns_record_hosted_zone_id != null && var.alb_dns_record_name != null ? 1 : 0
+  count = var.alb_enabled == true && var.alb_dns_record_hosted_zone_id != null && var.alb_dns_record_name != null ? 1 : 0
   name = var.alb_dns_record_name
   zone_id = var.alb_dns_record_hosted_zone_id
   type = "CNAME"
