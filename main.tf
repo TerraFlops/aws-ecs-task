@@ -293,6 +293,13 @@ resource "aws_ecs_service" "task" {
     module.task_alb
   ]
 
+  # Ignore changes to the task definition
+  lifecycle {
+    ignore_changes = [
+      task_definition
+    ]
+  }
+
   name = local.ecs_task_name
   cluster = var.ecs_cluster_name
   task_definition = aws_ecs_task_definition.task.arn
