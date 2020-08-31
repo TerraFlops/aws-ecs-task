@@ -337,4 +337,22 @@ resource "aws_ecs_service" "task" {
       container_port = load_balancer.value["container_port"]
     }
   }
+
+  # Setup service registry
+  dynamic "service_registries" {
+    for_each = var.service_registry_arn == null ? {} : tomap({
+      service_registries = {
+        registry_arn = var.service_registry_arn
+        container_name = local.ecs_task_name
+        container_port = var.service_registry_port
+        port = var.service_registry_port
+      }
+    })
+    content {
+      registry_arn = service_registries.value["registry_arn"]
+      container_name = service_registries.value["container_name"]
+      container_port = service_registries.value["container_port"]
+      port = service_registries.value["port"]
+    }
+  }
 }

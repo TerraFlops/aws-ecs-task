@@ -364,3 +364,15 @@ variable "alb_health_check_response_codes" {
     200
   ]
 }
+
+variable "service_registry_arn" {
+  description = "Optional service register ARN. If specified you must also supply a service registry port"
+  type = string
+  default = null
+}
+
+variable "service_registry_port" {
+  description = "Optional service register port. If specified you must also supply a service registry ARN. Defaults to 8080"
+  type = number
+  default = 8080
+}
