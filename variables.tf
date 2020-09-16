@@ -18,6 +18,12 @@ variable "ecs_execution_role_name" {
   default = null
 }
 
+variable "ecs_secrets" {
+  description = "Optional map of secrets to pass into the task definition"
+  type = map(string)
+  default = {}
+}
+
 variable "ecs_execution_role_name_create" {
   description = "Boolean flag, if true the ECS execution role will be created. If false it must already exist before using the module. Defaults to true"
   type = bool
