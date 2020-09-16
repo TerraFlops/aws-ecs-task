@@ -134,6 +134,17 @@ data "aws_iam_policy_document" "ecs_execution_iam_role" {
       "*"
     ]
   }
+  statement {
+    effect = "Allow"
+    actions = [
+      "ssm:GetParameters",
+      "secretsmanager:GetSecretValue",
+      "kms:Decrypt"
+    ]
+    resources = [
+      "*"
+    ]
+  }
 }
 
 # Create policy document allowing Fargate/ECS tasks to assume the role
