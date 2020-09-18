@@ -253,12 +253,6 @@ variable "ecs_task_scaling_cpu_up_adjustment" {
   default = 2
 }
 
-variable "ecs_task_scaling_cpu_upper_bound" {
-  description = "Upper CPU scaling limit"
-  type = number
-  default = 32
-}
-
 variable "ecs_task_scaling_evaulation_periods" {
   description = "CPU scaling number of evaluation periods"
   type = number
