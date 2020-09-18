@@ -256,7 +256,7 @@ variable "ecs_task_scaling_cpu_up_adjustment" {
 variable "ecs_task_scaling_evaulation_periods" {
   description = "CPU scaling number of evaluation periods"
   type = number
-  default = 2
+  default = 1
 }
 
 variable "ecs_task_scaling_cpu_comparison" {
@@ -274,7 +274,7 @@ variable "ecs_task_scaling_cpu_statistic" {
 variable "ecs_task_scaling_cpu_period" {
   description = "CPU scaling measurement period"
   type = number
-  default = 30
+  default = 60
 }
 
 variable "ecs_task_mount_points" {
