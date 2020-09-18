@@ -281,7 +281,10 @@ variable "alb_certificate_subject_name" {
 
 variable "alb_certificate_alternate_names" {
   description = "Optional set of alternate subject names to be added to the load balancer certificate"
-  type = set(string)
+  type = set(object({
+    name = string
+    hosted_zone_id = string
+  }))
   default = []
 }
 
