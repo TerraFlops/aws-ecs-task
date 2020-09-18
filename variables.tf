@@ -244,13 +244,13 @@ variable "ecs_task_scaling_cpu_threshold" {
 variable "ecs_task_scaling_cpu_down_adjustment" {
   description = "Number of tasks to scale down"
   type = number
-  value = -1
+  default = -1
 }
 
 variable "ecs_task_scaling_cpu_up_adjustment" {
   description = "Number of tasks to scale up"
   type = number
-  value = 2
+  default = 2
 }
 
 variable "ecs_task_scaling_cpu_count" {
