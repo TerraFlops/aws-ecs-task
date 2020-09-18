@@ -223,6 +223,60 @@ variable "read_only_root_filesystem" {
   default = true
 }
 
+variable "ecs_task_scaling_minimum" {
+  description = "Minimum number of tasks"
+  type = number
+  default = 1
+}
+
+variable "ecs_task_scaling_maximum" {
+  description = "Maximum number of tasks"
+  type = number
+  default = 1
+}
+
+variable "ecs_task_scaling_cpu_threshold" {
+  description = "CPU scaling threshold"
+  type = number
+  default = 75
+}
+
+variable "ecs_task_scaling_cpu_down_adjustment" {
+  description = "Number of tasks to scale down"
+  type = number
+  value = -1
+}
+
+variable "ecs_task_scaling_cpu_up_adjustment" {
+  description = "Number of tasks to scale up"
+  type = number
+  value = 2
+}
+
+variable "ecs_task_scaling_cpu_count" {
+  description = "CPU scaling number of measurements"
+  type = number
+  default = 3
+}
+
+variable "ecs_task_scaling_cpu_comparison" {
+  description = "CPU scaling comparison"
+  type = string
+  default = "GreaterThanOrEqualToThreshold"
+}
+
+variable "ecs_task_scaling_cpu_statistic" {
+  description = "CPU scaling statistic"
+  type = string
+  default = "Average"
+}
+
+variable "ecs_task_scaling_cpu_period" {
+  description = "CPU scaling measurement period"
+  type = number
+  default = 15
+}
+
 variable "ecs_task_mount_points" {
   description = "Optional list of mount points in the Docker container"
   type = list(object({
