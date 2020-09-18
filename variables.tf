@@ -217,6 +217,12 @@ variable "ecs_task_port_mappings" {
   default = []
 }
 
+variable "read_only_root_filesystem" {
+  description = "Boolean flag, if true the ECS root filesystem will be marked as read-only."
+  type = bool
+  default = true
+}
+
 variable "ecs_task_mount_points" {
   description = "Optional list of mount points in the Docker container"
   type = list(object({
