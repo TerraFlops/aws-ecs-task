@@ -390,7 +390,6 @@ resource "aws_appautoscaling_policy" "task_cpu_scale_down" {
     cooldown = var.ecs_task_scaling_evaulation_periods * var.ecs_task_scaling_cpu_period
     metric_aggregation_type = var.ecs_task_scaling_cpu_statistic
     step_adjustment {
-      metric_interval_upper_bound = 0
       scaling_adjustment = var.ecs_task_scaling_cpu_down_adjustment
     }
   }
