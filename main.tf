@@ -413,15 +413,15 @@ resource "aws_appautoscaling_policy" "task_cpu_scale_up" {
   }
 }
 
-resource "aws_cloudwatch_metric_alarm" "cpu_utilization_high" {
-  alarm_name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilization"
-  comparison_operator = var.ecs_task_scaling_cpu_comparison
+resource "aws_cloudwatch_metric_alarm" "cpu_utilization_up" {
+  alarm_name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationUp"
+  comparison_operator = var.ecs_task_scaling_cpu_comparison_up
   evaluation_periods = var.ecs_task_scaling_evaulation_periods
   metric_name = "CPUUtilization"
   namespace = "AWS/ECS"
   period = var.ecs_task_scaling_cpu_period
   statistic = var.ecs_task_scaling_cpu_statistic
-  threshold = var.ecs_task_scaling_cpu_threshold
+  threshold = var.ecs_task_scaling_cpu_threshold_up
   dimensions = {
     ServiceName = local.ecs_task_name
     ClusterName = var.ecs_cluster_name
@@ -429,5 +429,24 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_high" {
   alarm_description = "Monitor ${local.ecs_task_name} ECS task CPU usage"
   alarm_actions = [
     aws_appautoscaling_policy.task_cpu_scale_up.arn
+  ]
+}
+
+resource "aws_cloudwatch_metric_alarm" "cpu_utilization_down" {
+  alarm_name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationDown"
+  comparison_operator = var.ecs_task_scaling_cpu_comparison_down
+  evaluation_periods = var.ecs_task_scaling_evaulation_periods
+  metric_name = "CPUUtilization"
+  namespace = "AWS/ECS"
+  period = var.ecs_task_scaling_cpu_period
+  statistic = var.ecs_task_scaling_cpu_statistic
+  threshold = var.ecs_task_scaling_cpu_threshold_down
+  dimensions = {
+    ServiceName = local.ecs_task_name
+    ClusterName = var.ecs_cluster_name
+  }
+  alarm_description = "Monitor ${local.ecs_task_name} ECS task CPU usage"
+  alarm_actions = [
+    aws_appautoscaling_policy.task_cpu_scale_down.arn
   ]
 }

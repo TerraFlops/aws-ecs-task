@@ -235,10 +235,16 @@ variable "ecs_task_scaling_maximum" {
   default = 1
 }
 
-variable "ecs_task_scaling_cpu_threshold" {
+variable "ecs_task_scaling_cpu_threshold_up" {
   description = "CPU scaling threshold"
   type = number
-  default = 75
+  default = 80
+}
+
+variable "ecs_task_scaling_cpu_threshold_down" {
+  description = "CPU scaling threshold"
+  type = number
+  default = 40
 }
 
 variable "ecs_task_scaling_cpu_down_adjustment" {
@@ -259,10 +265,16 @@ variable "ecs_task_scaling_evaulation_periods" {
   default = 1
 }
 
-variable "ecs_task_scaling_cpu_comparison" {
+variable "ecs_task_scaling_cpu_comparison_up" {
   description = "CPU scaling comparison"
   type = string
   default = "GreaterThanOrEqualToThreshold"
+}
+
+variable "ecs_task_scaling_cpu_comparison_down" {
+  description = "CPU scaling comparison"
+  type = string
+  default = "LessThanOrEqualToThreshold"
 }
 
 variable "ecs_task_scaling_cpu_statistic" {
