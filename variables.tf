@@ -259,7 +259,7 @@ variable "ecs_task_scaling_cpu_up_adjustment" {
   default = 1
 }
 
-variable "ecs_task_scaling_evaulation_periods" {
+variable "ecs_task_scaling_evaluation_periods" {
   description = "CPU scaling number of evaluation periods"
   type = number
   default = 1
@@ -269,6 +269,12 @@ variable "ecs_task_scaling_cpu_comparison_up" {
   description = "CPU scaling comparison"
   type = string
   default = "GreaterThanOrEqualToThreshold"
+}
+
+variable "ecs_task_scaling_enabled" {
+  description = "Boolean flag, if true scaling rules will be created"
+  type = bool
+  default = false
 }
 
 variable "ecs_task_scaling_cpu_comparison_down" {

@@ -372,6 +372,7 @@ resource "aws_ecs_service" "task" {
 }
 
 resource "aws_appautoscaling_target" "task" {
+  count = ecs_task_scaling_enabled == true ? 1 : 0
   max_capacity = var.ecs_task_scaling_maximum
   min_capacity = var.ecs_task_scaling_minimum
   resource_id = "service/${var.ecs_cluster_name}/${local.ecs_task_name}"
@@ -380,14 +381,15 @@ resource "aws_appautoscaling_target" "task" {
 }
 
 resource "aws_appautoscaling_policy" "task_cpu_scale_down" {
+  count = ecs_task_scaling_enabled == true ? 1 : 0
   name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuScaleDown"
   policy_type = "StepScaling"
-  resource_id = aws_appautoscaling_target.task.resource_id
-  scalable_dimension = aws_appautoscaling_target.task.scalable_dimension
-  service_namespace = aws_appautoscaling_target.task.service_namespace
+  resource_id = aws_appautoscaling_target.task[0].resource_id
+  scalable_dimension = aws_appautoscaling_target.task[0].scalable_dimension
+  service_namespace = aws_appautoscaling_target.task[0].service_namespace
   step_scaling_policy_configuration {
     adjustment_type = "ChangeInCapacity"
-    cooldown = var.ecs_task_scaling_evaulation_periods * var.ecs_task_scaling_cpu_period
+    cooldown = var.ecs_task_scaling_evaluation_periods * var.ecs_task_scaling_cpu_period
     metric_aggregation_type = var.ecs_task_scaling_cpu_statistic
     step_adjustment {
       metric_interval_lower_bound = 0
@@ -397,14 +399,15 @@ resource "aws_appautoscaling_policy" "task_cpu_scale_down" {
 }
 
 resource "aws_appautoscaling_policy" "task_cpu_scale_up" {
+  count = ecs_task_scaling_enabled == true ? 1 : 0
   name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuScaleUp"
   policy_type = "StepScaling"
-  resource_id = aws_appautoscaling_target.task.resource_id
-  scalable_dimension = aws_appautoscaling_target.task.scalable_dimension
-  service_namespace = aws_appautoscaling_target.task.service_namespace
+  resource_id = aws_appautoscaling_target.task[0].resource_id
+  scalable_dimension = aws_appautoscaling_target.task[0].scalable_dimension
+  service_namespace = aws_appautoscaling_target.task[0].service_namespace
   step_scaling_policy_configuration {
     adjustment_type = "ChangeInCapacity"
-    cooldown = var.ecs_task_scaling_evaulation_periods * var.ecs_task_scaling_cpu_period
+    cooldown = var.ecs_task_scaling_evaluation_periods * var.ecs_task_scaling_cpu_period
     metric_aggregation_type = var.ecs_task_scaling_cpu_statistic
     step_adjustment {
       metric_interval_upper_bound = 0
@@ -414,9 +417,10 @@ resource "aws_appautoscaling_policy" "task_cpu_scale_up" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu_utilization_up" {
+  count = ecs_task_scaling_enabled == true ? 1 : 0
   alarm_name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationUp"
   comparison_operator = var.ecs_task_scaling_cpu_comparison_up
-  evaluation_periods = var.ecs_task_scaling_evaulation_periods
+  evaluation_periods = var.ecs_task_scaling_evaluation_periods
   metric_name = "CPUUtilization"
   namespace = "AWS/ECS"
   period = var.ecs_task_scaling_cpu_period
@@ -428,14 +432,15 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_up" {
   }
   alarm_description = "Monitor ${local.ecs_task_name} ECS task CPU usage"
   alarm_actions = [
-    aws_appautoscaling_policy.task_cpu_scale_up.arn
+    aws_appautoscaling_policy.task_cpu_scale_up[0].arn
   ]
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu_utilization_down" {
+  count = ecs_task_scaling_enabled == true ? 1 : 0
   alarm_name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationDown"
   comparison_operator = var.ecs_task_scaling_cpu_comparison_down
-  evaluation_periods = var.ecs_task_scaling_evaulation_periods
+  evaluation_periods = var.ecs_task_scaling_evaluation_periods
   metric_name = "CPUUtilization"
   namespace = "AWS/ECS"
   period = var.ecs_task_scaling_cpu_period
@@ -447,6 +452,6 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_down" {
   }
   alarm_description = "Monitor ${local.ecs_task_name} ECS task CPU usage"
   alarm_actions = [
-    aws_appautoscaling_policy.task_cpu_scale_down.arn
+    aws_appautoscaling_policy.task_cpu_scale_down[0].arn
   ]
 }
