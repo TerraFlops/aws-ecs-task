@@ -250,7 +250,7 @@ variable "ecs_task_scaling_cpu_down_adjustment" {
 variable "ecs_task_scaling_cpu_up_adjustment" {
   description = "Number of tasks to scale up"
   type = number
-  default = 2
+  default = 1
 }
 
 variable "ecs_task_scaling_evaulation_periods" {
