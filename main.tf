@@ -359,7 +359,6 @@ resource "aws_ecs_service" "task" {
         registry_arn = var.service_registry_arn
         container_name = local.ecs_task_name
         container_port = var.service_registry_port
-        port = var.service_registry_port
       }
     })
     content {
