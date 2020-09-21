@@ -457,9 +457,3 @@ variable "service_registry_arn" {
   type = string
   default = null
 }
-
-variable "service_registry_port" {
-  description = "Optional service register port. If specified you must also supply a service registry ARN. Defaults to 8080"
-  type = number
-  default = 8080
-}
