@@ -21,6 +21,9 @@ locals {
 
 # Create an ACM certificate for the load balancer if we are using HTTPS
 module "task_alb_certificate" {
+  depends_on = [
+    module.task_alb.alb_listener_arn
+  ]
   count = var.alb_listener_protocol == "https" && var.alb_enabled == true && var.alb_certificate_arn == null ? 1 : 0
   source = "git::https://github.com/TerraFlops/aws-acm-certificate.git?ref=v2.1"
   domain_name = var.alb_certificate_subject_name
