@@ -368,6 +368,9 @@ resource "aws_ecs_service" "task" {
 }
 
 resource "aws_appautoscaling_target" "task" {
+  depends_on = [
+    aws_ecs_service.task
+  ]
   count = var.ecs_task_scaling_enabled == true ? 1 : 0
   max_capacity = var.ecs_task_scaling_maximum
   min_capacity = var.ecs_task_scaling_minimum
@@ -377,6 +380,9 @@ resource "aws_appautoscaling_target" "task" {
 }
 
 resource "aws_appautoscaling_policy" "task_cpu_scale_down" {
+  depends_on = [
+    aws_ecs_service.task
+  ]
   count = var.ecs_task_scaling_enabled == true ? 1 : 0
   name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuScaleDown"
   policy_type = "StepScaling"
@@ -395,6 +401,9 @@ resource "aws_appautoscaling_policy" "task_cpu_scale_down" {
 }
 
 resource "aws_appautoscaling_policy" "task_cpu_scale_up" {
+  depends_on = [
+    aws_ecs_service.task
+  ]
   count = var.ecs_task_scaling_enabled == true ? 1 : 0
   name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuScaleUp"
   policy_type = "StepScaling"
@@ -413,6 +422,9 @@ resource "aws_appautoscaling_policy" "task_cpu_scale_up" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu_utilization_up" {
+  depends_on = [
+    aws_ecs_service.task
+  ]
   count = var.ecs_task_scaling_enabled == true ? 1 : 0
   alarm_name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationUp"
   comparison_operator = var.ecs_task_scaling_cpu_comparison_up
@@ -433,6 +445,9 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_up" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu_utilization_down" {
+  depends_on = [
+    aws_ecs_service.task
+  ]
   count = var.ecs_task_scaling_enabled == true ? 1 : 0
   alarm_name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationDown"
   comparison_operator = var.ecs_task_scaling_cpu_comparison_down
