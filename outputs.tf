@@ -95,10 +95,10 @@ output "ecs_scale_down_alarm_arn" {
 
 output "ecs_scale_up_sns_topic_arn" {
   description = "ARN of CPU CloudWatch alarm that triggers scale up event"
-  value = var.ecs_task_scaling_enabled == true ? aws_sns_topic.cpu_utilization_up.arn : null
+  value = var.ecs_task_scaling_enabled == true ? aws_sns_topic.cpu_utilization_up[0].arn : null
 }
 
 output "ecs_scale_down_sns_topic_arn" {
   description = "ARN of CPU CloudWatch alarm that triggers scale down event"
-  value = var.ecs_task_scaling_enabled == true ? aws_sns_topic.cpu_utilization_down.arn : null
+  value = var.ecs_task_scaling_enabled == true ? aws_sns_topic.cpu_utilization_down[0].arn : null
 }
