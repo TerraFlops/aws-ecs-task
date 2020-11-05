@@ -469,3 +469,11 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_down" {
     aws_appautoscaling_policy.task_cpu_scale_down[0].arn
   ]
 }
+
+resource "aws_sns_topic" "cpu_utilization_up" {
+  name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationUp"
+}
+
+resource "aws_sns_topic" "cpu_utilization_down" {
+  name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationDown"
+}
