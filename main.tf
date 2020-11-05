@@ -479,3 +479,17 @@ resource "aws_sns_topic" "cpu_utilization_down" {
   count = var.ecs_task_scaling_enabled == true ? 1 : 0
   name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationDown"
 }
+
+resource "aws_sns_topic_subscription" "cpu_utilization_up" {
+  for_each = ecs_task_scaling_alarm_sms_numbers
+  endpoint = each.value
+  protocol = "sms"
+  topic_arn = aws_sns_topic.cpu_utilization_up[0].arn
+}
+
+resource "aws_sns_topic_subscription" "cpu_utilization_down" {
+  for_each = ecs_task_scaling_alarm_sms_numbers
+  endpoint = each.value
+  protocol = "sms"
+  topic_arn = aws_sns_topic.cpu_utilization_down[0].arn
+}
