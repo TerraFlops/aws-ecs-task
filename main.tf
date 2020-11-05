@@ -471,9 +471,11 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_down" {
 }
 
 resource "aws_sns_topic" "cpu_utilization_up" {
+  count = var.ecs_task_scaling_enabled == true ? 1 : 0
   name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationUp"
 }
 
 resource "aws_sns_topic" "cpu_utilization_down" {
+  count = var.ecs_task_scaling_enabled == true ? 1 : 0
   name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationDown"
 }
