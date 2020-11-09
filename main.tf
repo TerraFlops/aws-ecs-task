@@ -394,7 +394,7 @@ resource "aws_appautoscaling_policy" "task_cpu_scale_down" {
   service_namespace = aws_appautoscaling_target.task[0].service_namespace
   step_scaling_policy_configuration {
     adjustment_type = "ChangeInCapacity"
-    cooldown = var.ecs_task_scaling_evaluation_periods * var.ecs_task_scaling_cpu_period
+    cooldown = var.ecs_task_scaling_cpu_evaluation_periods * var.ecs_task_scaling_cpu_period
     metric_aggregation_type = var.ecs_task_scaling_cpu_statistic
     step_adjustment {
       metric_interval_lower_bound = 0
@@ -415,7 +415,7 @@ resource "aws_appautoscaling_policy" "task_cpu_scale_up" {
   service_namespace = aws_appautoscaling_target.task[0].service_namespace
   step_scaling_policy_configuration {
     adjustment_type = "ChangeInCapacity"
-    cooldown = var.ecs_task_scaling_evaluation_periods * var.ecs_task_scaling_cpu_period
+    cooldown = var.ecs_task_scaling_cpu_evaluation_periods * var.ecs_task_scaling_cpu_period
     metric_aggregation_type = var.ecs_task_scaling_cpu_statistic
     step_adjustment {
       metric_interval_upper_bound = 0
@@ -428,10 +428,9 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_up" {
   depends_on = [
     aws_ecs_service.task
   ]
-  count = var.ecs_task_scaling_enabled == true ? 1 : 0
   alarm_name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationUp"
   comparison_operator = var.ecs_task_scaling_cpu_comparison_up
-  evaluation_periods = var.ecs_task_scaling_evaluation_periods
+  evaluation_periods = var.ecs_task_scaling_cpu_evaluation_periods
   metric_name = "CPUUtilization"
   namespace = "AWS/ECS"
   period = var.ecs_task_scaling_cpu_period
@@ -442,19 +441,18 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_up" {
     ClusterName = var.ecs_cluster_name
   }
   alarm_description = "Monitor ${local.ecs_task_name} ECS task CPU usage"
-  alarm_actions = [
-    aws_appautoscaling_policy.task_cpu_scale_up[0].arn
-  ]
+  alarm_actions = length(aws_appautoscaling_policy.task_cpu_scale_down) > 0 ? [
+    aws_appautoscaling_policy.task_cpu_scale_down[0].arn
+  ] : null
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu_utilization_down" {
   depends_on = [
     aws_ecs_service.task
   ]
-  count = var.ecs_task_scaling_enabled == true ? 1 : 0
   alarm_name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationDown"
   comparison_operator = var.ecs_task_scaling_cpu_comparison_down
-  evaluation_periods = var.ecs_task_scaling_evaluation_periods
+  evaluation_periods = var.ecs_task_scaling_cpu_evaluation_periods
   metric_name = "CPUUtilization"
   namespace = "AWS/ECS"
   period = var.ecs_task_scaling_cpu_period
@@ -465,9 +463,50 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_down" {
     ClusterName = var.ecs_cluster_name
   }
   alarm_description = "Monitor ${local.ecs_task_name} ECS task CPU usage"
-  alarm_actions = [
+  alarm_actions = length(aws_appautoscaling_policy.task_cpu_scale_down) > 0 ? [
     aws_appautoscaling_policy.task_cpu_scale_down[0].arn
+  ] : null
+}
+
+
+resource "aws_cloudwatch_metric_alarm" "memory_utilization_up" {
+  depends_on = [
+    aws_ecs_service.task
   ]
+  count = var.ecs_task_scaling_enabled == true ? 1 : 0
+  alarm_name = "${var.ecs_cluster_name}${local.ecs_task_name}MemoryUtilizationUp"
+  comparison_operator = var.ecs_task_scaling_memory_comparison_up
+  evaluation_periods = var.ecs_task_scaling_memory_evaluation_periods
+  metric_name = "MemoryUtilization"
+  namespace = "AWS/ECS"
+  period = var.ecs_task_scaling_memory_period
+  statistic = var.ecs_task_scaling_memory_statistic
+  threshold = var.ecs_task_scaling_memory_threshold_up
+  dimensions = {
+    ServiceName = local.ecs_task_name
+    ClusterName = var.ecs_cluster_name
+  }
+  alarm_description = "Monitor ${local.ecs_task_name} ECS task memory usage"
+}
+
+resource "aws_cloudwatch_metric_alarm" "memory_utilization_down" {
+  depends_on = [
+    aws_ecs_service.task
+  ]
+  count = var.ecs_task_scaling_enabled == true ? 1 : 0
+  alarm_name = "${var.ecs_cluster_name}${local.ecs_task_name}MemoryUtilizationDown"
+  comparison_operator = var.ecs_task_scaling_memory_comparison_down
+  evaluation_periods = var.ecs_task_scaling_memory_evaluation_periods
+  metric_name = "MemoryUtilization"
+  namespace = "AWS/ECS"
+  period = var.ecs_task_scaling_memory_period
+  statistic = var.ecs_task_scaling_memory_statistic
+  threshold = var.ecs_task_scaling_memory_threshold_down
+  dimensions = {
+    ServiceName = local.ecs_task_name
+    ClusterName = var.ecs_cluster_name
+  }
+  alarm_description = "Monitor ${local.ecs_task_name} ECS task memory usage"
 }
 
 resource "aws_sns_topic" "cpu_utilization_up" {

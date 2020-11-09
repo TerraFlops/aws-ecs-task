@@ -247,6 +247,19 @@ variable "ecs_task_scaling_cpu_threshold_down" {
   default = 40
 }
 
+
+variable "ecs_task_scaling_memory_threshold_up" {
+  description = "RAM scaling threshold"
+  type = number
+  default = 80
+}
+
+variable "ecs_task_scaling_memory_threshold_down" {
+  description = "RAM scaling threshold"
+  type = number
+  default = 20
+}
+
 variable "ecs_task_scaling_cpu_down_adjustment" {
   description = "Number of tasks to scale down"
   type = number
@@ -259,14 +272,26 @@ variable "ecs_task_scaling_cpu_up_adjustment" {
   default = 1
 }
 
-variable "ecs_task_scaling_evaluation_periods" {
+variable "ecs_task_scaling_cpu_evaluation_periods" {
   description = "CPU scaling number of evaluation periods"
+  type = number
+  default = 1
+}
+
+variable "ecs_task_scaling_memory_evaluation_periods" {
+  description = "RAM scaling number of evaluation periods"
   type = number
   default = 1
 }
 
 variable "ecs_task_scaling_cpu_comparison_up" {
   description = "CPU scaling comparison"
+  type = string
+  default = "GreaterThanOrEqualToThreshold"
+}
+
+variable "ecs_task_scaling_memory_comparison_up" {
+  description = "RAM scaling comparison"
   type = string
   default = "GreaterThanOrEqualToThreshold"
 }
@@ -289,14 +314,32 @@ variable "ecs_task_scaling_cpu_comparison_down" {
   default = "LessThanOrEqualToThreshold"
 }
 
+variable "ecs_task_scaling_memory_comparison_down" {
+  description = "Memory scaling comparison"
+  type = string
+  default = "LessThanOrEqualToThreshold"
+}
+
 variable "ecs_task_scaling_cpu_statistic" {
   description = "CPU scaling statistic"
   type = string
   default = "Average"
 }
 
+variable "ecs_task_scaling_memory_statistic" {
+  description = "RAM scaling statistic"
+  type = string
+  default = "Average"
+}
+
 variable "ecs_task_scaling_cpu_period" {
   description = "CPU scaling measurement period"
+  type = number
+  default = 60
+}
+
+variable "ecs_task_scaling_memory_period" {
+  description = "RAM scaling measurement period"
   type = number
   default = 60
 }
