@@ -441,7 +441,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_up_scale" {
     ServiceName = local.ecs_task_name
     ClusterName = var.ecs_cluster_name
   }
-  alarm_description = "Monitor ${local.ecs_task_name} ECS task CPU usage"
+  alarm_description = "Scale up when CPU spikes on ${local.ecs_task_name} ECS task"
   alarm_actions = var.ecs_task_scaling_enabled == true ? [
     aws_appautoscaling_policy.task_cpu_scale_up[0].arn
   ] : []
@@ -464,7 +464,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_down_scale" {
     ServiceName = local.ecs_task_name
     ClusterName = var.ecs_cluster_name
   }
-  alarm_description = "Monitor ${local.ecs_task_name} ECS task CPU usage"
+  alarm_description = "Scale down when CPU spikes on ${local.ecs_task_name} ECS task"
   alarm_actions = var.ecs_task_scaling_enabled == true ? [
     aws_appautoscaling_policy.task_cpu_scale_down[0].arn
   ] : []
@@ -487,7 +487,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_up_sms" {
     ServiceName = local.ecs_task_name
     ClusterName = var.ecs_cluster_name
   }
-  alarm_description = "Monitor ${local.ecs_task_name} ECS task CPU usage"
+  alarm_description = "Send SMS when CPU spikes on ${local.ecs_task_name} ECS task"
   alarm_actions = [
     aws_sns_topic.cpu_utilization_up_sms[0].arn
   ]

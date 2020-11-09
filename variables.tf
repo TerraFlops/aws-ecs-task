@@ -63,7 +63,7 @@ variable "ecs_service_deployment_minimum_healthy_percent" {
 variable "ecs_service_deployment_maximum_percent" {
   description = "Maximum percentage of containers to be deployed"
   type = number
-  default = 200
+  default = 600
 }
 
 variable "ecs_platform_version" {
