@@ -241,12 +241,6 @@ variable "ecs_task_scaling_cpu_threshold_up" {
   default = 80
 }
 
-variable "ecs_task_scaling_memory_threshold_up" {
-  description = "RAM scaling threshold"
-  type = number
-  default = 80
-}
-
 variable "ecs_task_scaling_cpu_up_adjustment" {
   description = "Number of tasks to scale up"
   type = number
@@ -259,20 +253,8 @@ variable "ecs_task_scaling_cpu_evaluation_periods" {
   default = 1
 }
 
-variable "ecs_task_scaling_memory_evaluation_periods" {
-  description = "RAM scaling number of evaluation periods"
-  type = number
-  default = 1
-}
-
 variable "ecs_task_scaling_cpu_comparison_up" {
   description = "CPU scaling comparison"
-  type = string
-  default = "GreaterThanOrEqualToThreshold"
-}
-
-variable "ecs_task_scaling_memory_comparison_up" {
-  description = "RAM scaling comparison"
   type = string
   default = "GreaterThanOrEqualToThreshold"
 }
@@ -295,20 +277,8 @@ variable "ecs_task_scaling_cpu_statistic" {
   default = "Average"
 }
 
-variable "ecs_task_scaling_memory_statistic" {
-  description = "RAM scaling statistic"
-  type = string
-  default = "Average"
-}
-
 variable "ecs_task_scaling_cpu_period" {
   description = "CPU scaling measurement period"
-  type = number
-  default = 60
-}
-
-variable "ecs_task_scaling_memory_period" {
-  description = "RAM scaling measurement period"
   type = number
   default = 60
 }
@@ -476,7 +446,7 @@ variable "service_registry_arn" {
   default = null
 }
 
-variable "cpu_scaling_target" {
+variable "ecs_task_cpu_scaling_target" {
   type = number
   default = 50
 }
