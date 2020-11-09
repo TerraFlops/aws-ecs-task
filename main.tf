@@ -402,7 +402,7 @@ resource "aws_appautoscaling_policy" "task_cpu_scale_down" {
     }
   }
 }
-2
+
 resource "aws_appautoscaling_policy" "task_cpu_scale_up" {
   depends_on = [
     aws_ecs_service.task
