@@ -426,7 +426,8 @@ resource "aws_appautoscaling_policy" "task_cpu_scale_up" {
 
 resource "aws_cloudwatch_metric_alarm" "cpu_utilization_up_scale" {
   depends_on = [
-    aws_ecs_service.task
+    aws_ecs_service.task,
+    aws_appautoscaling_policy.task_cpu_scale_up
   ]
   alarm_name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationUp"
   comparison_operator = var.ecs_task_scaling_cpu_comparison_up
@@ -448,7 +449,8 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_up_scale" {
 
 resource "aws_cloudwatch_metric_alarm" "cpu_utilization_down_scale" {
   depends_on = [
-    aws_ecs_service.task
+    aws_ecs_service.task,
+    aws_appautoscaling_policy.task_cpu_scale_down
   ]
   alarm_name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationDown"
   comparison_operator = var.ecs_task_scaling_cpu_comparison_down
