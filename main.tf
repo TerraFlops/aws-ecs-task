@@ -394,7 +394,7 @@ resource "aws_appautoscaling_policy" "task_cpu_scale_down" {
   service_namespace = aws_appautoscaling_target.task[0].service_namespace
   step_scaling_policy_configuration {
     adjustment_type = "ChangeInCapacity"
-    cooldown = var.ecs_task_scaling_cpu_evaluation_periods * var.ecs_task_scaling_cpu_period
+    cooldown = var.ecs_task_scaling_cpu_evaluation_periods * var.ecs_task_scaling_cpu_period * 4
     metric_aggregation_type = var.ecs_task_scaling_cpu_statistic
     step_adjustment {
       metric_interval_lower_bound = 0
