@@ -442,7 +442,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_up_scale" {
     ClusterName = var.ecs_cluster_name
   }
   alarm_description = "Monitor ${local.ecs_task_name} ECS task CPU usage"
-  alarm_actions = length(aws_appautoscaling_policy.task_cpu_scale_up) > 0 ? [
+  alarm_actions = var.ecs_task_scaling_enabled == true ? [
     aws_appautoscaling_policy.task_cpu_scale_up[0].arn
   ] : []
 }
@@ -465,7 +465,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_down_scale" {
     ClusterName = var.ecs_cluster_name
   }
   alarm_description = "Monitor ${local.ecs_task_name} ECS task CPU usage"
-  alarm_actions = length(aws_appautoscaling_policy.task_cpu_scale_down) > 0 ? [
+  alarm_actions = var.ecs_task_scaling_enabled == true ? [
     aws_appautoscaling_policy.task_cpu_scale_down[0].arn
   ] : []
 }
