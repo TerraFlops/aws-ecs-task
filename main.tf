@@ -530,11 +530,11 @@ resource "aws_sns_topic" "cpu_utilization_down" {
 }
 
 resource "aws_sns_topic" "memory_utilization_up" {
-  name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationUp"
+  name = "${var.ecs_cluster_name}${local.ecs_task_name}MemoryUtilizationUp"
 }
 
 resource "aws_sns_topic" "memory_utilization_down" {
-  name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationDown"
+  name = "${var.ecs_cluster_name}${local.ecs_task_name}MemoryUtilizationDown"
 }
 
 resource "aws_sns_topic_subscription" "cpu_utilization_up" {
