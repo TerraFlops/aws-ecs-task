@@ -449,6 +449,28 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_up" {
   ]
 }
 
+resource "aws_cloudwatch_metric_alarm" "cpu_utilization_up_sms" {
+  depends_on = [
+    aws_ecs_service.task
+  ]
+  alarm_name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationUp"
+  comparison_operator = var.ecs_task_scaling_cpu_comparison_up
+  evaluation_periods = var.ecs_task_scaling_cpu_evaluation_periods
+  metric_name = "CPUUtilization"
+  namespace = "AWS/ECS"
+  period = var.ecs_task_scaling_cpu_period
+  statistic = var.ecs_task_scaling_cpu_statistic
+  threshold = var.ecs_task_scaling_cpu_threshold_up
+  dimensions = {
+    ServiceName = local.ecs_task_name
+    ClusterName = var.ecs_cluster_name
+  }
+  alarm_description = "Monitor ${local.ecs_task_name} ECS task CPU usage"
+  alarm_actions = [
+    aws_sns_topic.cpu_utilization_up.arn
+  ]
+}
+
 resource "aws_cloudwatch_metric_alarm" "cpu_utilization_down" {
   depends_on = [
     aws_ecs_service.task
@@ -474,6 +496,27 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_down" {
   ]
 }
 
+resource "aws_cloudwatch_metric_alarm" "cpu_utilization_down_sms" {
+  depends_on = [
+    aws_ecs_service.task
+  ]
+  alarm_name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationDown"
+  comparison_operator = var.ecs_task_scaling_cpu_comparison_down
+  evaluation_periods = var.ecs_task_scaling_cpu_evaluation_periods
+  metric_name = "CPUUtilization"
+  namespace = "AWS/ECS"
+  period = var.ecs_task_scaling_cpu_period
+  statistic = var.ecs_task_scaling_cpu_statistic
+  threshold = var.ecs_task_scaling_cpu_threshold_down
+  dimensions = {
+    ServiceName = local.ecs_task_name
+    ClusterName = var.ecs_cluster_name
+  }
+  alarm_description = "Monitor ${local.ecs_task_name} ECS task CPU usage"
+  alarm_actions = [
+    aws_sns_topic.cpu_utilization_down.arn
+  ]
+}
 
 resource "aws_cloudwatch_metric_alarm" "memory_utilization_up" {
   depends_on = [
