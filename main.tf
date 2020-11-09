@@ -441,9 +441,12 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_up" {
     ClusterName = var.ecs_cluster_name
   }
   alarm_description = "Monitor ${local.ecs_task_name} ECS task CPU usage"
-  alarm_actions = length(aws_appautoscaling_policy.task_cpu_scale_down) > 0 ? [
-    aws_appautoscaling_policy.task_cpu_scale_down[0].arn
-  ] : null
+  alarm_actions = length(aws_appautoscaling_policy.task_cpu_scale_up) > 0 ? [
+    aws_appautoscaling_policy.task_cpu_scale_up[0].arn,
+    aws_sns_topic.cpu_utilization_up.arn
+  ] : [
+    aws_sns_topic.cpu_utilization_up.arn
+  ]
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu_utilization_down" {
@@ -464,8 +467,11 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_down" {
   }
   alarm_description = "Monitor ${local.ecs_task_name} ECS task CPU usage"
   alarm_actions = length(aws_appautoscaling_policy.task_cpu_scale_down) > 0 ? [
-    aws_appautoscaling_policy.task_cpu_scale_down[0].arn
-  ] : null
+    aws_appautoscaling_policy.task_cpu_scale_down[0].arn,
+    aws_sns_topic.cpu_utilization_down.arn
+  ] : [
+    aws_sns_topic.cpu_utilization_down.arn
+  ]
 }
 
 
@@ -487,6 +493,9 @@ resource "aws_cloudwatch_metric_alarm" "memory_utilization_up" {
     ClusterName = var.ecs_cluster_name
   }
   alarm_description = "Monitor ${local.ecs_task_name} ECS task memory usage"
+  alarm_actions = [
+    aws_sns_topic.memory_utilization_up.arn
+  ]
 }
 
 resource "aws_cloudwatch_metric_alarm" "memory_utilization_down" {
@@ -507,15 +516,24 @@ resource "aws_cloudwatch_metric_alarm" "memory_utilization_down" {
     ClusterName = var.ecs_cluster_name
   }
   alarm_description = "Monitor ${local.ecs_task_name} ECS task memory usage"
+  alarm_actions = [
+    aws_sns_topic.memory_utilization_down.arn
+  ]
 }
 
 resource "aws_sns_topic" "cpu_utilization_up" {
-  count = var.ecs_task_scaling_enabled == true ? 1 : 0
   name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationUp"
 }
 
 resource "aws_sns_topic" "cpu_utilization_down" {
-  count = var.ecs_task_scaling_enabled == true ? 1 : 0
+  name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationDown"
+}
+
+resource "aws_sns_topic" "memory_utilization_up" {
+  name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationUp"
+}
+
+resource "aws_sns_topic" "memory_utilization_down" {
   name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationDown"
 }
 
@@ -523,12 +541,12 @@ resource "aws_sns_topic_subscription" "cpu_utilization_up" {
   for_each = var.ecs_task_scaling_alarm_sms_numbers
   endpoint = each.value
   protocol = "sms"
-  topic_arn = aws_sns_topic.cpu_utilization_up[0].arn
+  topic_arn = aws_sns_topic.cpu_utilization_up.arn
 }
 
 resource "aws_sns_topic_subscription" "cpu_utilization_down" {
   for_each = var.ecs_task_scaling_alarm_sms_numbers
   endpoint = each.value
   protocol = "sms"
-  topic_arn = aws_sns_topic.cpu_utilization_down[0].arn
+  topic_arn = aws_sns_topic.cpu_utilization_down.arn
 }
