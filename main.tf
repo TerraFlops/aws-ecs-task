@@ -388,86 +388,16 @@ resource "aws_appautoscaling_policy" "task_cpu_scale_down" {
   ]
   count = var.ecs_task_scaling_enabled == true ? 1 : 0
   name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuScaleDown"
-  policy_type = "StepScaling"
+  policy_type = "TargetTrackingScaling"
   resource_id = aws_appautoscaling_target.task[0].resource_id
   scalable_dimension = aws_appautoscaling_target.task[0].scalable_dimension
   service_namespace = aws_appautoscaling_target.task[0].service_namespace
-  step_scaling_policy_configuration {
-    adjustment_type = "ChangeInCapacity"
-    cooldown = 120
-    metric_aggregation_type = var.ecs_task_scaling_cpu_statistic
-    step_adjustment {
-      metric_interval_lower_bound = 0
-      scaling_adjustment = var.ecs_task_scaling_cpu_down_adjustment
+  target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageCPUUtilization"
     }
+    target_value = 50
   }
-}
-
-resource "aws_appautoscaling_policy" "task_cpu_scale_up" {
-  depends_on = [
-    aws_ecs_service.task
-  ]
-  count = var.ecs_task_scaling_enabled == true ? 1 : 0
-  name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuScaleUp"
-  policy_type = "StepScaling"
-  resource_id = aws_appautoscaling_target.task[0].resource_id
-  scalable_dimension = aws_appautoscaling_target.task[0].scalable_dimension
-  service_namespace = aws_appautoscaling_target.task[0].service_namespace
-  step_scaling_policy_configuration {
-    adjustment_type = "ChangeInCapacity"
-    cooldown = 60
-    metric_aggregation_type = var.ecs_task_scaling_cpu_statistic
-    step_adjustment {
-      metric_interval_upper_bound = 0
-      scaling_adjustment = var.ecs_task_scaling_cpu_up_adjustment
-    }
-  }
-}
-
-resource "aws_cloudwatch_metric_alarm" "cpu_utilization_up_scale" {
-  depends_on = [
-    aws_ecs_service.task,
-    aws_appautoscaling_policy.task_cpu_scale_up
-  ]
-  alarm_name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationUp"
-  comparison_operator = var.ecs_task_scaling_cpu_comparison_up
-  evaluation_periods = var.ecs_task_scaling_cpu_evaluation_periods
-  metric_name = "CPUUtilization"
-  namespace = "AWS/ECS"
-  period = var.ecs_task_scaling_cpu_period
-  statistic = var.ecs_task_scaling_cpu_statistic
-  threshold = var.ecs_task_scaling_cpu_threshold_up
-  dimensions = {
-    ServiceName = local.ecs_task_name
-    ClusterName = var.ecs_cluster_name
-  }
-  alarm_description = "Scale up when CPU spikes on ${local.ecs_task_name} ECS task"
-  alarm_actions = var.ecs_task_scaling_enabled == true ? [
-    aws_appautoscaling_policy.task_cpu_scale_up[0].arn
-  ] : []
-}
-
-resource "aws_cloudwatch_metric_alarm" "cpu_utilization_down_scale" {
-  depends_on = [
-    aws_ecs_service.task,
-    aws_appautoscaling_policy.task_cpu_scale_down
-  ]
-  alarm_name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationDown"
-  comparison_operator = var.ecs_task_scaling_cpu_comparison_down
-  evaluation_periods = var.ecs_task_scaling_cpu_evaluation_periods
-  metric_name = "CPUUtilization"
-  namespace = "AWS/ECS"
-  period = var.ecs_task_scaling_cpu_period
-  statistic = var.ecs_task_scaling_cpu_statistic
-  threshold = var.ecs_task_scaling_cpu_threshold_down
-  dimensions = {
-    ServiceName = local.ecs_task_name
-    ClusterName = var.ecs_cluster_name
-  }
-  alarm_description = "Scale down when CPU spikes on ${local.ecs_task_name} ECS task"
-  alarm_actions = var.ecs_task_scaling_enabled == true ? [
-    aws_appautoscaling_policy.task_cpu_scale_down[0].arn
-  ] : []
 }
 
 resource "aws_cloudwatch_metric_alarm" "cpu_utilization_up_sms" {
