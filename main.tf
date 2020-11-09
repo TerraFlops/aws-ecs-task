@@ -474,6 +474,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_up_sms" {
   depends_on = [
     aws_ecs_service.task
   ]
+  count = length(var.ecs_task_scaling_alarm_sms_numbers) > 0 ? 1 : 0
   alarm_name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationUpSms"
   comparison_operator = var.ecs_task_scaling_cpu_comparison_up
   evaluation_periods = var.ecs_task_scaling_cpu_evaluation_periods
@@ -488,11 +489,12 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_up_sms" {
   }
   alarm_description = "Monitor ${local.ecs_task_name} ECS task CPU usage"
   alarm_actions = [
-    aws_sns_topic.cpu_utilization_up_sms.arn
+    aws_sns_topic.cpu_utilization_up_sms[0].arn
   ]
 }
 
 resource "aws_sns_topic" "cpu_utilization_up_sms" {
+  count = length(var.ecs_task_scaling_alarm_sms_numbers) > 0 ? 1 : 0
   name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationUpSms"
 }
 
@@ -500,5 +502,5 @@ resource "aws_sns_topic_subscription" "cpu_utilization_up_sms" {
   for_each = var.ecs_task_scaling_alarm_sms_numbers
   endpoint = each.value
   protocol = "sms"
-  topic_arn = aws_sns_topic.cpu_utilization_up_sms.arn
+  topic_arn = aws_sns_topic.cpu_utilization_up_sms[0].arn
 }
