@@ -370,7 +370,7 @@ resource "aws_ecs_service" "task" {
   }
 }
 
-resource "aws_appautoscaling_target" "task" {
+resource "aws_appautoscaling_target" "scaling_target" {
   depends_on = [
     aws_ecs_service.task
   ]
@@ -382,21 +382,21 @@ resource "aws_appautoscaling_target" "task" {
   service_namespace = "ecs"
 }
 
-resource "aws_appautoscaling_policy" "task_cpu_scale_down" {
+resource "aws_appautoscaling_policy" "scaling_policy" {
   depends_on = [
     aws_ecs_service.task
   ]
   count = var.ecs_task_scaling_enabled == true ? 1 : 0
   name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuScaleDown"
   policy_type = "TargetTrackingScaling"
-  resource_id = aws_appautoscaling_target.task[0].resource_id
-  scalable_dimension = aws_appautoscaling_target.task[0].scalable_dimension
-  service_namespace = aws_appautoscaling_target.task[0].service_namespace
+  resource_id = aws_appautoscaling_target.scaling_target[0].resource_id
+  scalable_dimension = aws_appautoscaling_target.scaling_target[0].scalable_dimension
+  service_namespace = aws_appautoscaling_target.scaling_target
   target_tracking_scaling_policy_configuration {
     predefined_metric_specification {
       predefined_metric_type = "ECSServiceAverageCPUUtilization"
     }
-    target_value = 50
+    target_value = var.cpu_scaling_target
   }
 }
 

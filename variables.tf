@@ -241,29 +241,10 @@ variable "ecs_task_scaling_cpu_threshold_up" {
   default = 80
 }
 
-variable "ecs_task_scaling_cpu_threshold_down" {
-  description = "CPU scaling threshold"
-  type = number
-  default = 40
-}
-
-
 variable "ecs_task_scaling_memory_threshold_up" {
   description = "RAM scaling threshold"
   type = number
   default = 80
-}
-
-variable "ecs_task_scaling_memory_threshold_down" {
-  description = "RAM scaling threshold"
-  type = number
-  default = 20
-}
-
-variable "ecs_task_scaling_cpu_down_adjustment" {
-  description = "Number of tasks to scale down"
-  type = number
-  default = -1
 }
 
 variable "ecs_task_scaling_cpu_up_adjustment" {
@@ -306,18 +287,6 @@ variable "ecs_task_scaling_alarm_sms_numbers" {
   description = "Set of mobile phone numbers to send SMS alerts to when scaling events occur"
   type = set(string)
   default = []
-}
-
-variable "ecs_task_scaling_cpu_comparison_down" {
-  description = "CPU scaling comparison"
-  type = string
-  default = "LessThanOrEqualToThreshold"
-}
-
-variable "ecs_task_scaling_memory_comparison_down" {
-  description = "Memory scaling comparison"
-  type = string
-  default = "LessThanOrEqualToThreshold"
 }
 
 variable "ecs_task_scaling_cpu_statistic" {
@@ -505,4 +474,9 @@ variable "service_registry_arn" {
   description = "Optional service register ARN. If specified you must also supply a service registry port"
   type = string
   default = null
+}
+
+variable "cpu_scaling_target" {
+  type = number
+  default = 50
 }
