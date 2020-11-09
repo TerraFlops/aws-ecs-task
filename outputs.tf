@@ -82,23 +82,3 @@ output "green_target_group_name" {
   description = "If an ALB was created this will contain the name of the green target group"
   value = var.alb_enabled == true ? module.task_alb[0].green_target_group_name : null
 }
-
-output "ecs_scale_up_alarm_arn" {
-  description = "ARN of CPU CloudWatch alarm that triggers scale up event"
-  value = var.ecs_task_scaling_enabled == true ? aws_cloudwatch_metric_alarm.cpu_utilization_up.arn : null
-}
-
-output "ecs_scale_down_alarm_arn" {
-  description = "ARN of CPU CloudWatch alarm that triggers scale down event"
-  value = var.ecs_task_scaling_enabled == true ? aws_cloudwatch_metric_alarm.cpu_utilization_down.arn : null
-}
-
-output "ecs_scale_up_sns_topic_arn" {
-  description = "ARN of CPU CloudWatch topic that triggers scale up event"
-  value = aws_sns_topic.cpu_utilization_up.arn
-}
-
-output "ecs_scale_down_sns_topic_arn" {
-  description = "ARN of CPU CloudWatch topic that triggers scale down event"
-  value = aws_sns_topic.cpu_utilization_down.arn
-}
