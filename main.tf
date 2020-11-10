@@ -233,6 +233,7 @@ resource "aws_ssm_parameter" "ecr_repository_tag" {
 resource "aws_ssm_parameter" "ecs_task_definition_template" {
   name = local.ecs_task_definition_template_name
   type = "String"
+  tier = "Advanced"
   value = module.ecs_container_definition_template.json
 }
 
