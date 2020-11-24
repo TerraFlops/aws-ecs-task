@@ -74,8 +74,10 @@ resource "aws_route53_record" "task_alb_cname" {
   type = "CNAME"
   allow_overwrite = true
   ttl = 300
-  records = [
+  records = var.alb_dns_record_cname == null ? [
     module.task_alb[0].alb_dns_name
+  ] : [
+      var.alb_dns_record_cname
   ]
 }
 

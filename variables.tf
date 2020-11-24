@@ -339,6 +339,11 @@ variable "alb_certificate_arn" {
   default = null
 }
 
+variable "alb_dns_record_cname" {
+  description = "Optional override for ALBs CNAME record"
+  default = null
+}
+
 variable "alb_certificate_subject_name" {
   description = "Primary subject name to be used on the load balancer certificate. This is required if using a HTTPS listener"
   type = string
