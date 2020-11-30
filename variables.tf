@@ -265,12 +265,6 @@ variable "ecs_task_scaling_enabled" {
   default = false
 }
 
-variable "ecs_task_scaling_alarm_sms_numbers" {
-  description = "Set of mobile phone numbers to send SMS alerts to when scaling events occur"
-  type = set(string)
-  default = []
-}
-
 variable "ecs_task_scaling_cpu_statistic" {
   description = "CPU scaling statistic"
   type = string
