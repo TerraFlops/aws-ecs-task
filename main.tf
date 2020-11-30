@@ -402,38 +402,3 @@ resource "aws_appautoscaling_policy" "scaling_policy" {
     target_value = var.ecs_task_cpu_scaling_target
   }
 }
-
-resource "aws_cloudwatch_metric_alarm" "cpu_utilization_up_sms" {
-  depends_on = [
-    aws_ecs_service.task
-  ]
-  count = length(var.ecs_task_scaling_alarm_sms_numbers) > 0 ? 1 : 0
-  alarm_name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationUpSms"
-  comparison_operator = var.ecs_task_scaling_cpu_comparison_up
-  evaluation_periods = var.ecs_task_scaling_cpu_evaluation_periods
-  metric_name = "CPUUtilization"
-  namespace = "AWS/ECS"
-  period = var.ecs_task_scaling_cpu_period
-  statistic = var.ecs_task_scaling_cpu_statistic
-  threshold = var.ecs_task_scaling_cpu_threshold_up
-  dimensions = {
-    ServiceName = local.ecs_task_name
-    ClusterName = var.ecs_cluster_name
-  }
-  alarm_description = "Send SMS when CPU spikes on ${local.ecs_task_name} ECS task"
-  alarm_actions = [
-    aws_sns_topic.cpu_utilization_up_sms[0].arn
-  ]
-}
-
-resource "aws_sns_topic" "cpu_utilization_up_sms" {
-  count = length(var.ecs_task_scaling_alarm_sms_numbers) > 0 ? 1 : 0
-  name = "${var.ecs_cluster_name}${local.ecs_task_name}CpuUtilizationUpSms"
-}
-
-resource "aws_sns_topic_subscription" "cpu_utilization_up_sms" {
-  for_each = var.ecs_task_scaling_alarm_sms_numbers
-  endpoint = each.value
-  protocol = "sms"
-  topic_arn = aws_sns_topic.cpu_utilization_up_sms[0].arn
-}
