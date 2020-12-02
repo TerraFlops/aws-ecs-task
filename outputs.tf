@@ -48,6 +48,11 @@ output "alb_arn" {
   value = var.alb_enabled == true ? module.task_alb[0].alb_arn : null
 }
 
+output "alb_id" {
+  description = "If an ALB was created this will contain the ID of the load balancer"
+  value = var.alb_enabled == true ? module.task_alb[0].alb_id : null
+}
+
 output "alb_dns_name" {
   description = "If an ALB was created this will contain the DNS name"
   value = var.alb_enabled == true ? module.task_alb[0].alb_dns_name : null
