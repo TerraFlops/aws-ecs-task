@@ -208,7 +208,7 @@ variable "ecs_task_volumes_efs" {
   description = "Optional list of AWS EFS volumes to attach to the container"
   type = list(object({
     name = string
-    transit_encryption = bool
+    transit_encryption = string
     transit_encryption_port = number
     file_system_id = string
     root_directory = string
