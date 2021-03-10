@@ -300,6 +300,8 @@ resource "aws_ecs_task_definition" "task" {
     content {
       name = volume.value["name"]
       efs_volume_configuration {
+        transit_encryption = volume.value["transit_encryption"]
+        transit_encryption_port = volume.value["transit_encryption_port"]
         file_system_id = volume.value["file_system_id"]
         root_directory = volume.value["root_directory"]
       }
