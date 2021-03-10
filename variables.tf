@@ -7,6 +7,12 @@ variable "name" {
   type = string
 }
 
+variable "alb_listener_ssl_policy" {
+  description = "The SSL negoitation policy that will be used. Defaults to ELBSecurityPolicy-2016-08"
+  type = string
+  default = "ELBSecurityPolicy-2016-08"
+}
+
 variable "ecs_cluster_name" {
   description = "Name of existing ECS cluster into which tasks will be placed"
   type = string

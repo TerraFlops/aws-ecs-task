@@ -45,6 +45,7 @@ module "task_alb" {
   # Setup listener
   listener_port = var.alb_listener_port
   listener_protocol = var.alb_listener_protocol
+  listener_ssl_policy = var.alb_listener_ssl_policy
   listener_certificate_arn = var.alb_listener_protocol == "https" ? local.alb_certificate_arn : null
 
   # Setup target
