@@ -144,7 +144,6 @@ data "aws_iam_policy_document" "ecs_execution_iam_role" {
     effect = "Allow"
     actions = [
       "ssm:GetParameters",
-      "secretsmanager:GetSecretValue",
       "kms:Decrypt"
     ]
     resources = [
