@@ -42,6 +42,12 @@ variable "ecs_task_role_name" {
   default = null
 }
 
+variable "ecs_task_role" {
+  type = bool
+  description = "Boolean flag, if true an ECS task role will be associated with the task"
+  default = true
+}
+
 variable "ecs_task_role_name_create" {
   description = "Boolean flag, if true the ECS task role will be created. If false it must already exist before using the module. Defaults to true"
   type = bool
