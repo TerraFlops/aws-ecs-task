@@ -285,7 +285,7 @@ resource "aws_ecs_task_definition" "task" {
 
   # Associate the IAM task/execution roles
   execution_role_arn = var.ecs_execution_role_name_create == true ? module.ecs_execution_iam_role[0].iam_role_arn : data.aws_iam_role.ecs_execution_iam_role[0].arn
-  task_role_arn = (var.ecs_task_role == true ? (var.ecs_task_role_name_create == true ? module.ecs_task_iam_role[0].iam_role_arn : data.aws_iam_role.ecs_task_iam_role[0].arn) : null
+  task_role_arn = var.ecs_task_role == true ? (var.ecs_task_role_name_create == true ? module.ecs_task_iam_role[0].iam_role_arn : data.aws_iam_role.ecs_task_iam_role[0].arn) : null
 
   # Attach Docker volumes
   dynamic "volume" {
