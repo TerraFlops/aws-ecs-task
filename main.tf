@@ -34,13 +34,15 @@ module "task_alb" {
     module.task_alb_certificate
   ]
   count = var.alb_enabled == true ? 1 : 0
-  source = "git::https://github.com/TerraFlops/aws-ecs-blue-green-load-balancer?ref=v1.6"
+  source = "git::https://github.com/TerraFlops/aws-ecs-blue-green-load-balancer?ref=v1.7"
   name = var.name
   internal = var.alb_internal
 
   # Setup log bucket
   log_bucket = var.alb_log_bucket
   log_bucket_create = true
+  logging_bucket = var.logging_bucket
+  logging_bucket_target_prefix = var.logging_bucket_target_prefix
 
   # Setup listener
   listener_port = var.alb_listener_port
