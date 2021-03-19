@@ -10,12 +10,12 @@ output "ecs_task_family" {
 
 output "ecs_task_iam_role_arn" {
   description = "ARN of the ECS task role"
-  value = var.ecs_task_role_name_create == true ? module.ecs_task_iam_role[0].iam_role_arn : data.aws_iam_role.ecs_task_iam_role[0].arn
+  value = var.ecs_task_role == true ? var.ecs_task_role_name_create == true ? module.ecs_task_iam_role[0].iam_role_arn : data.aws_iam_role.ecs_task_iam_role[0].arn : null
 }
 
 output "ecs_task_iam_role_name" {
   description = "Name of the ECS task role"
-  value = var.ecs_task_role_name_create == true ? module.ecs_task_iam_role[0].iam_role_name : data.aws_iam_role.ecs_task_iam_role[0].name
+  value = var.ecs_task_role == true ? var.ecs_task_role_name_create == true ? module.ecs_task_iam_role[0].iam_role_name : data.aws_iam_role.ecs_task_iam_role[0].name : null
 }
 
 output "ecs_execution_iam_role_arn" {
