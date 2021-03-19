@@ -463,3 +463,13 @@ variable "ecs_task_cpu_scaling_target" {
   type = number
   default = 50
 }
+
+variable "logging_bucket" {
+  type = string
+  default = null
+}
+
+variable "logging_bucket_target_prefix" {
+  type = string
+  default = null
+}
