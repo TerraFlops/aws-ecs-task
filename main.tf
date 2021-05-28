@@ -34,7 +34,7 @@ module "task_alb" {
     module.task_alb_certificate
   ]
   count = var.alb_enabled == true ? 1 : 0
-  source = "git::https://github.com/TerraFlops/aws-ecs-blue-green-load-balancer?ref=v1.8"
+  source = "git::https://github.com/TerraFlops/aws-ecs-blue-green-load-balancer?ref=v1.9"
   name = var.name
   internal = var.alb_internal
 
@@ -57,6 +57,7 @@ module "task_alb" {
   deregistration_delay = var.alb_deregistration_delay
 
   # Setup health check
+  health_check_enabled = var.alb_health_check_enabled
   health_check_port = var.alb_health_check_port
   health_check_url = var.alb_health_check_url
   health_check_protocol = var.alb_health_check_protocol

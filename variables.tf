@@ -415,6 +415,12 @@ variable "alb_deregistration_delay" {
   default = 45
 }
 
+variable "alb_health_check_enabled" {
+  type = bool
+  default = true
+}
+
+
 variable "alb_health_check_port" {
   description = "The port to use when performing the load balancer health check"
   type = number
