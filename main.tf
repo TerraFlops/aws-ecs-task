@@ -34,7 +34,7 @@ module "task_alb" {
     module.task_alb_certificate
   ]
   count = var.alb_enabled == true ? 1 : 0
-  source = "git::https://github.com/TerraFlops/aws-ecs-blue-green-load-balancer?ref=v1.9"
+  source = "git::https://github.com/TerraFlops/aws-ecs-blue-green-load-balancer?ref=v1.10"
   name = var.name
   internal = var.alb_internal
 
