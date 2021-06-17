@@ -282,6 +282,8 @@ resource "aws_ecs_task_definition" "task" {
   network_mode = "awsvpc"
   requires_compatibilities = upper(var.ecs_launch_type) == "FARGATE" ? ["EC2", "FARGATE"] : ["EC2"]
   tags = {}
+  ipc_mode = ""
+  pid_mode = ""
 
   # Associate the IAM task/execution roles
   execution_role_arn = var.ecs_execution_role_name_create == true ? module.ecs_execution_iam_role[0].iam_role_arn : data.aws_iam_role.ecs_execution_iam_role[0].arn
@@ -308,13 +310,6 @@ resource "aws_ecs_task_definition" "task" {
       }
     }
   }
-
-  lifecycle {
-    ignore_changes = [
-      revision,
-      tags
-    ]
-  }
 }
 
 # Create ECS service
@@ -325,6 +320,7 @@ resource "aws_ecs_service" "task" {
 
   # Ignore changes to the task definition
   lifecycle {
+    create_before_destroy = true
     ignore_changes = [
       task_definition,
       desired_count
