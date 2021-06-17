@@ -309,10 +309,10 @@ resource "aws_ecs_task_definition" "task" {
   }
 
   lifecycle {
-    ignore_changes = {
+    ignore_changes = [
       revision,
       tags
-    }
+    ]
   }
 }
 
