@@ -310,6 +310,10 @@ resource "aws_ecs_task_definition" "task" {
       }
     }
   }
+
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
 # Create ECS service
