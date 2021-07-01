@@ -183,7 +183,7 @@ variable "ecs_task_entry_point" {
 variable "ecs_task_command" {
   description = "Optional override for the Docker containers command"
   type = list(string)
-  default = null
+  default = []
 }
 
 variable "ecs_task_security_group_ids" {

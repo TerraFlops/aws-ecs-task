@@ -268,7 +268,7 @@ module "ecs_container_definition_template" {
   volumes = var.ecs_task_volumes
   volumes_efs = var.ecs_task_volumes_efs
   mount_points = var.ecs_task_mount_points
-  environment_variables = var.ecs_task_environment_variables
+  environment_variables = merge(var.ecs_task_environment_variables, {"AWS_ECS_TASK_NAME" = var.name})
   log_group_name = var.ecs_task_log_group_name == null ? var.ecs_cluster_name : var.ecs_task_log_group_name
   log_group_region = var.ecs_task_log_group_region == null ? data.aws_region.log_group_region.name : var.ecs_task_log_group_region
 }
