@@ -310,9 +310,12 @@ resource "aws_ecs_task_definition" "task" {
       }
     }
   }
-
+  # Ignore change to the tags or revision number that might be updated by external sources
   lifecycle {
-    ignore_changes = all
+    ignore_changes = [
+      revision,
+      tags
+    ]
   }
 }
 
