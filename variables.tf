@@ -231,7 +231,7 @@ variable "ecs_task_port_mappings" {
   default = []
 }
 
-variable "read_only_root_filesystem" {
+variable "ecs_task_read_only_filesystem" {
   description = "Boolean flag, if true the ECS root filesystem will be marked as read-only."
   type = bool
   default = true

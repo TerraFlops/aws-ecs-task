@@ -261,7 +261,7 @@ module "ecs_container_definition_template" {
   secrets = var.ecs_secrets
   memory = var.ecs_task_memory
   working_directory = var.ecs_task_working_directory
-  read_only_root_filesystem = var.read_only_root_filesystem
+  read_only_root_filesystem = var.ecs_task_read_only_filesystem
   port_mappings = var.ecs_task_port_mappings
   entry_point = var.ecs_task_entry_point
   command = var.ecs_task_command
