@@ -62,9 +62,9 @@ output "load_balancer_listener_arn" {
 }
 
 output "target_group_arn" {
-  value = var.load_balancer_create == false ? null : aws_lb_target_group.ecs_task.arn
+  value = var.load_balancer_create == false ? null : aws_lb_target_group.ecs_task[0].arn
 }
 
 output "target_group_name" {
-  value = var.load_balancer_create == false ? null : aws_lb_target_group.ecs_task.name
+  value = var.load_balancer_create == false ? null : aws_lb_target_group.ecs_task[0].name
 }

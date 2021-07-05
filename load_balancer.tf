@@ -126,7 +126,7 @@ locals {
 }
 
 resource "aws_s3_bucket" "audit_log_bucket" {
-  count = local.alb_log_bucket_create == true ? 1 : 0
+  count = var.load_balancer_create && local.alb_log_bucket_create == true ? 1 : 0
   bucket = var.load_balancer_log_bucket
   versioning {
     enabled = true
@@ -138,8 +138,7 @@ resource "aws_s3_bucket" "audit_log_bucket" {
       }
     }
   }
-  policy = data.aws_iam_policy_document.log_bucket.json
-
+  policy = data.aws_iam_policy_document.log_bucket[0].json
   dynamic "logging" {
     for_each = var.audit_log_bucket == null ? {} : tomap({
       logging = {
@@ -165,6 +164,7 @@ resource "aws_s3_bucket_public_access_block" "log_bucket" {
 
 # Setup bucket policy allowing ALB to write logs (https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html)
 data "aws_iam_policy_document" "log_bucket" {
+  count = var.load_balancer_create ? 1 : 0
   version = "2012-10-17"
   statement {
     effect = "Allow"
@@ -225,21 +225,20 @@ resource "aws_lb" "application" {
   drop_invalid_header_fields = true
   security_groups = var.load_balancer_security_group_ids
   subnets = var.load_balancer_subnet_ids
-
   access_logs {
     bucket = aws_s3_bucket.audit_log_bucket[0].bucket
     prefix = local.container_name
     enabled = true
   }
-
   tags = merge(var.ecs_task_tags, {
     Name = local.container_name
   })
 }
 
 resource "aws_lb_target_group" "ecs_task" {
+  count = var.load_balancer_create ? 1 : 0
   name = local.container_name
-  port = var.ecs_target_port
+  port = var.load_balancer_target_port
   protocol = upper(var.load_balancer_target_protocol)
   target_type = var.load_balancer_target_type
   vpc_id = var.load_balancer_vpc_id
@@ -249,7 +248,7 @@ resource "aws_lb_target_group" "ecs_task" {
       health_check = {
         path = var.load_balancer_health_check_url
         port = var.load_balancer_health_check_port
-        matcher = var.load_balancer_health_check_response_codes
+        matcher = join(",", var.load_balancer_health_check_response_codes)
         timeout = var.load_balancer_health_check_timeout
         protocol = upper(var.load_balancer_health_check_protocol)
       }
@@ -268,13 +267,14 @@ resource "aws_lb_target_group" "ecs_task" {
 }
 
 resource "aws_lb_listener" "alb_listener" {
-  load_balancer_arn = aws_lb.application.arn
+  count = var.load_balancer_create ? 1 : 0
+  load_balancer_arn = aws_lb.application[0].arn
   port = var.load_balancer_listener_port
   protocol = upper(var.load_balancer_listener_protocol)
-  certificate_arn = upper(var.load_balancer_listener_protocol) == "HTTPS" ? var.load_balancer_certificate_arn : null
+  certificate_arn = upper(var.load_balancer_listener_protocol) == "HTTPS" ? module.load_balancer_certificate[0].acm_certificate_arn : null
   ssl_policy = upper(var.load_balancer_listener_protocol) == "HTTPS" ? var.load_balancer_ssl_policy : null
   default_action {
     type = "forward"
-    target_group_arn = aws_lb_target_group.ecs_task.arn
+    target_group_arn = aws_lb_target_group.ecs_task[0].arn
   }
 }

@@ -30,18 +30,6 @@ variable "ecs_task_working_directory" {
   default = null
 }
 
-variable "ecs_task_log_group_name" {
-  description = "Optional CloudWatch log group name override. If none supplied the ECS cluster name will be used"
-  type = string
-  default = null
-}
-
-variable "ecs_task_log_group_region" {
-  description = "Optional CloudWatch log region override. If none specified defaults to the current Terraform AWS provider region"
-  type = string
-  default = null
-}
-
 variable "ecs_task_entry_point" {
   description = "Optional override for the Docker containers entry point"
   type = list(string)
@@ -128,7 +116,7 @@ variable "ecs_launch_type" {
   default = "FARGATE"
 }
 
-variable "ecs_target_port" {
+variable "load_balancer_target_port" {
   description = "The port the load balancer will use when passing traffic to the target container. Defaults to 8080"
   type = number
   default = 8080
@@ -164,7 +152,7 @@ variable "ecs_platform_version" {
   default = "1.4.0"
 }
 
-variable "health_check_grace_period_seconds" {
+variable "load_balancer_health_check_grace_period_seconds" {
   description = "Grace period on startup of containers before health check commences. Defaults to 120 seconds"
   type = number
   default = 120
@@ -172,7 +160,6 @@ variable "health_check_grace_period_seconds" {
 
 locals {
   ecs_task_name = join("", [for element in split("_", lower(replace(var.ecs_task_name, "-", "_"))) : title(element)])
-  health_check_grace_period_seconds = var.load_balancer_create == true ? var.health_check_grace_period_seconds : null
 }
 
 resource "aws_ecs_service" "task" {
@@ -185,7 +172,7 @@ resource "aws_ecs_service" "task" {
   deployment_minimum_healthy_percent = var.ecs_service_deployment_minimum_healthy_percent
   deployment_maximum_percent = var.ecs_service_deployment_maximum_percent
   platform_version = var.ecs_platform_version
-  health_check_grace_period_seconds = local.health_check_grace_period_seconds
+  health_check_grace_period_seconds = var.load_balancer_create == true ? var.load_balancer_health_check_grace_period_seconds : null
   deployment_controller {
     type = var.ecs_service_deployment_controller
   }
@@ -197,9 +184,9 @@ resource "aws_ecs_service" "task" {
   dynamic "load_balancer" {
     for_each = var.load_balancer_create == false ? {} : tomap({
       load_balancer = {
-        target_group_arn = aws_lb_target_group.ecs_task.arn
+        target_group_arn = aws_lb_target_group.ecs_task[0].arn
         container_name = local.ecs_task_name
-        container_port = var.ecs_target_port
+        container_port = var.load_balancer_target_port
       }
     })
     content {
@@ -221,7 +208,6 @@ resource "aws_ecs_service" "task" {
     }
   }
   lifecycle {
-    create_before_destroy = true
     ignore_changes = [
       task_definition,
       desired_count

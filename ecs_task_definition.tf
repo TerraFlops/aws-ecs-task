@@ -1,4 +1,4 @@
-variable "ecs_secrets" {
+variable "ecs_task_secrets" {
   description = "Optional map of secrets to pass into the task definition"
   type = map(string)
   default = {}
@@ -41,7 +41,7 @@ data "aws_caller_identity" "default" {}
 data "aws_region" "default" {}
 
 resource "aws_ecs_task_definition" "task" {
-  container_definitions = jsonencode(local.ecs_task_definition)
+  container_definitions = var.datadog_enabled == true ? jsonencode(concat([ local.ecs_task_definition ], local.datadog_task_definition)) : jsonencode([ local.ecs_task_definition ])
   cpu = var.ecs_task_cpu
   memory = var.ecs_task_memory
   family = var.ecs_task_family == null ? local.ecs_task_name : var.ecs_task_family
@@ -71,9 +71,6 @@ resource "aws_ecs_task_definition" "task" {
     }
   }
   lifecycle {
-    ignore_changes = [
-      revision,
-      tags
-    ]
+    ignore_changes = [ revision, tags ]
   }
 }

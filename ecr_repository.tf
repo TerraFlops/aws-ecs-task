@@ -19,7 +19,7 @@ variable "ecr_repository_initial_tag" {
 variable "ecr_repository_image_tag_mutability" {
   description = "Optional override, if creating the ECR repository this will define the mutability of image tags (defaults to 'IMMUTABLE')"
   type = string
-  default = "IMMUTABLE"
+  default = "MUTABLE"
 }
 
 variable "ecr_repository_scan_on_push" {
