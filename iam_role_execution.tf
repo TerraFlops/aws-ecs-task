@@ -1,5 +1,5 @@
 resource "aws_iam_role" "iam_role_execution" {
-  name = "${local.ecs_task_name}EcsExecutionRole"
+  name = "${local.application_name_snake}${local.ecs_task_name}EcsExecutionRole"
   description = "Role used by Fargate to start the ${local.ecs_task_name} ECS task"
   assume_role_policy = data.aws_iam_policy_document.iam_role_execution_assume_role.json
 }

@@ -218,7 +218,7 @@ data "aws_iam_policy_document" "log_bucket" {
 # Create application load balancer
 resource "aws_lb" "application" {
   count = var.load_balancer_create ? 1 : 0
-  name = local.container_name
+  name = "${local.application_name_snake}${local.container_name}"
   internal = var.load_balancer_internal
   load_balancer_type = "application"
   enable_deletion_protection = false
@@ -237,7 +237,7 @@ resource "aws_lb" "application" {
 
 resource "aws_lb_target_group" "ecs_task" {
   count = var.load_balancer_create ? 1 : 0
-  name = local.container_name
+  name = "${local.application_name_snake}${local.container_name}"
   port = var.load_balancer_target_port
   protocol = upper(var.load_balancer_target_protocol)
   target_type = var.load_balancer_target_type

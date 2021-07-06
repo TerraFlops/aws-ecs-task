@@ -1,3 +1,12 @@
+variable "application_name" {
+  type = string
+  description = "Application name that is prefixed onto resource names"
+}
+
+locals {
+  application_name_snake = join("", [for element in split("-", lower(replace(var.application_name, "_", "-"))) : title(element)])
+}
+
 variable "ecs_task_secrets" {
   description = "Optional map of secrets to pass into the task definition"
   type = map(string)
