@@ -319,6 +319,8 @@ resource "aws_ecs_service" "task" {
   # Ignore changes to the task definition
   lifecycle {
     ignore_changes = [
+      container_definitions,
+      revision,
       task_definition,
       desired_count
     ]
