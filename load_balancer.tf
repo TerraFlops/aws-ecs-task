@@ -117,6 +117,12 @@ variable "audit_log_bucket_prefix" {
   default = null
 }
 
+variable "waf_arn" {
+  description = "ARN of WAF to attach to ALB"
+  type = string
+  default = ""
+}
+
 locals {
   alb_health_check_response_codes = join(",", var.load_balancer_health_check_response_codes)
   alb_log_bucket_create = var.load_balancer_log_bucket != null
@@ -233,6 +239,12 @@ resource "aws_lb" "application" {
   tags = merge(var.ecs_task_tags, {
     Name = local.container_name
   })
+}
+
+resource "aws_wafv2_web_acl_association" "attach_waf" {
+  count = var.waf_arn == "" ? 0 : 1
+  resource_arn = aws_lb.application.arn
+  web_acl_arn  = var.waf_arn
 }
 
 resource "aws_lb_target_group" "ecs_task" {
