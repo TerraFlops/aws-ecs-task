@@ -482,5 +482,4 @@ variable "logging_bucket_target_prefix" {
 
 variable "waf_arn" {
   type = string
-  default = ""
 }
