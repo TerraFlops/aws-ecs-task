@@ -31,7 +31,7 @@ module "task_alb_certificate" {
 # Create application load balancer if required
 module "task_alb" {
   count    = var.alb_enabled == true ? 1 : 0
-  source   = "git::https://github.com/TerraFlops/aws-ecs-blue-green-load-balancer?ref=v1.12"
+  source   = "git::https://github.com/TerraFlops/aws-ecs-blue-green-load-balancer?ref=v1.13"
   name     = var.name
   internal = var.alb_internal
 
@@ -65,6 +65,9 @@ module "task_alb" {
   vpc_id             = var.alb_vpc_id
   security_group_ids = var.alb_security_group_ids
   subnet_ids         = var.alb_subnet_ids
+
+  # Configure waf association
+  waf_arn = var.waf_arn
 }
 
 # Create vanity Route 53 CNAME record for the load balancer if requested

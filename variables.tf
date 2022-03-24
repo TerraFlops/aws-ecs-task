@@ -479,3 +479,8 @@ variable "logging_bucket_target_prefix" {
   type = string
   default = null
 }
+
+variable "waf_arn" {
+  type = string
+  default = ""
+}
